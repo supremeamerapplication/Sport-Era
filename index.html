@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sportera - Football Community</title>
+    <title>Sportera - Football Support Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -21,6 +21,7 @@
             --light: #f5f5f5;
             --dark: #333;
             --gray: #777;
+            --card-bg: rgba(255, 255, 255, 0.1);
         }
 
         body {
@@ -289,6 +290,19 @@
             margin-bottom: 15px;
         }
 
+        .post-media {
+            margin: 15px 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .post-media img, .post-media video {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
         .post-footer {
             display: flex;
             justify-content: space-between;
@@ -296,6 +310,27 @@
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .post-action:hover {
+            color: var(--secondary);
+        }
+
+        .post-action.active {
+            color: var(--secondary);
         }
 
         .post-author {
@@ -310,16 +345,9 @@
             border-radius: 50%;
         }
 
-        .player-mention {
-            background: rgba(248, 195, 0, 0.2);
-            padding: 2px 8px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .player-mention:hover {
-            background: rgba(248, 195, 0, 0.4);
+        .admin-badge {
+            color: var(--secondary);
+            font-size: 0.8rem;
         }
 
         /* Modal Styles */
@@ -513,33 +541,73 @@
             width: 80px;
         }
 
-        /* Football Animation */
-        .football {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: url('https://cdn-icons-png.flaticon.com/512/53/53283.png') no-repeat center center;
-            background-size: contain;
-            z-index: -1;
-            animation: float 15s infinite linear;
+        /* Footer */
+        .footer {
+            background: rgba(30, 107, 48, 0.9);
+            padding: 20px 0;
+            margin-top: 50px;
+            border-top: 2px solid var(--secondary);
         }
 
-        @keyframes float {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            25% {
-                transform: translate(100px, 100px) rotate(90deg);
-            }
-            50% {
-                transform: translate(200px, 0) rotate(180deg);
-            }
-            75% {
-                transform: translate(100px, -100px) rotate(270deg);
-            }
-            100% {
-                transform: translate(0, 0) rotate(360deg);
-            }
+        .footer-nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .footer-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .footer-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--secondary);
+        }
+
+        .footer-btn i {
+            font-size: 1.5rem;
+        }
+
+        /* Login/Register Modal */
+        .auth-modal {
+            display: none;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            border-bottom: 2px solid var(--secondary);
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
         }
 
         /* Responsive Design */
@@ -582,15 +650,143 @@
                 right: 10px;
                 padding: 8px 15px;
             }
+            
+            .footer-nav {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            background: rgba(248, 195, 0, 0.1);
+            border: 2px solid var(--secondary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Premium Badge */
+        .premium-badge {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: var(--dark);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        /* Comment Section */
+        .comments-section {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        .comment-submit {
+            background: var(--secondary);
+            color: var(--dark);
+            border: none;
+            border-radius: 20px;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .comment {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .comment-text {
+            margin-bottom: 5px;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .comment-action {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .comment-action:hover {
+            color: var(--secondary);
         }
     </style>
 </head>
 <body>
-    <!-- Background Football Animation -->
-    <div class="football" style="top: 10%; left: 5%;"></div>
-    <div class="football" style="top: 20%; left: 80%;"></div>
-    <div class="football" style="top: 60%; left: 10%;"></div>
-    <div class="football" style="top: 80%; left: 70%;"></div>
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://www.soundjay.com/misc/sounds/crowd-cheer-1.wav" type="audio/wav">
+    </audio>
 
     <!-- Header -->
     <header>
@@ -603,11 +799,9 @@
                 
                 <div class="nav-links">
                     <a href="#" class="active">Home</a>
-                    <a href="#">Matches</a>
-                    <a href="#">News</a>
-                    <a href="#">Teams</a>
-                    <a href="#">Players</a>
                     <a href="#">Community</a>
+                    <a href="#" id="profileLink">Profile</a>
+                    <a href="#" id="supportLink">Support</a>
                 </div>
                 
                 <div class="user-actions">
@@ -616,9 +810,9 @@
                         <span class="notification-count">3</span>
                     </div>
                     
-                    <div class="user-profile">
+                    <div class="user-profile" id="userProfile">
                         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Profile">
-                        <span>John Doe</span>
+                        <span>Guest</span>
                     </div>
                 </div>
             </div>
@@ -652,6 +846,28 @@
 
     <!-- Main Content -->
     <div class="container">
+        <!-- Admin Panel (Visible only to admin) -->
+        <div class="admin-panel" id="adminPanel">
+            <h2><i class="fas fa-crown"></i> Admin Dashboard</h2>
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Total Posts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1,248</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">56</div>
+                    <div class="stat-label">Premium Users</div>
+                </div>
+            </div>
+            <button class="create-post-btn" id="adminCreatePostBtn">
+                <i class="fas fa-plus"></i> Create New Post
+            </button>
+        </div>
+
         <div class="main-content">
             <!-- Sidebar -->
             <div class="sidebar">
@@ -677,7 +893,7 @@
             <div class="posts-section">
                 <div class="section-header">
                     <h2>Latest Football News & Updates</h2>
-                    <button class="create-post-btn" id="createPostBtn">
+                    <button class="create-post-btn" id="createPostBtn" style="display: none;">
                         <i class="fas fa-plus"></i> Create Post
                     </button>
                 </div>
@@ -709,6 +925,7 @@
                         <option value="Serie A">Serie A</option>
                         <option value="Bundesliga">Bundesliga</option>
                         <option value="Champions League">Champions League</option>
+                        <option value="World Cup">World Cup</option>
                     </select>
                 </div>
                 
@@ -717,8 +934,107 @@
                     <textarea id="postContent" class="form-control" placeholder="Write your post content here..." required></textarea>
                 </div>
                 
+                <div class="form-group">
+                    <label for="postImage">Image URL (Optional)</label>
+                    <input type="url" id="postImage" class="form-control" placeholder="https://example.com/image.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label for="postVideo">Video URL (Optional)</label>
+                    <input type="url" id="postVideo" class="form-control" placeholder="https://example.com/video.mp4">
+                </div>
+                
                 <button type="submit" class="submit-btn">Publish Post</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal auth-modal" id="authModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAuthModal">&times;</span>
+            <h2>Join Sportera</h2>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="loginTab">Login</div>
+                <div class="auth-tab" id="registerTab">Register</div>
+            </div>
+            
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Login</button>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    <p>Admin? Use: suprememotive43@gmail.com</p>
+                </div>
+            </form>
+            
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" class="form-control" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" class="form-control" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" class="form-control" placeholder="Create a password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirm Password</label>
+                    <input type="password" id="registerConfirmPassword" class="form-control" placeholder="Confirm your password" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Support Modal -->
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeSupportModal">&times;</span>
+            <h2>Go Premium</h2>
+            <p>Upgrade to Premium to unlock all features including community creation and exclusive content.</p>
+            
+            <div class="form-group">
+                <label>Select Payment Method</label>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="submit-btn" style="width: auto;" id="cryptoBtn">Pay with Crypto (USDT BEP20)</button>
+                    <button class="submit-btn" style="width: auto; background: #1e6b30;" id="localBtn">Local Payment (Nigeria)</button>
+                </div>
+            </div>
+            
+            <div id="cryptoPayment" style="display: none; margin-top: 20px;">
+                <h3>Send USDT (BEP20) to this address:</h3>
+                <p style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; word-break: break-all;">
+                    0x742d35Cc6634C0532925a3b8D4a2a2a2a2a2a2a2a
+                </p>
+                <p>Amount: $19.99 USD</p>
+                <button class="submit-btn" id="confirmCrypto">I've Sent Payment</button>
+            </div>
+            
+            <div id="localPayment" style="display: none; margin-top: 20px;">
+                <h3>Local Payment Options (Nigeria)</h3>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="submit-btn" style="width: auto; background: #0a5c0a;">Pay with Bank Transfer</button>
+                    <button class="submit-btn" style="width: auto; background: #0a5c0a;">Pay with Card</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -726,26 +1042,38 @@
     <div class="music-player">
         <div class="music-info">
             <i class="fas fa-music"></i>
-            <span>Football Anthems Mix</span>
+            <span>Football Anthems</span>
         </div>
         <div class="music-controls">
-            <button class="music-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
             <button class="music-btn" id="playBtn"><i class="fas fa-play"></i></button>
-            <button class="music-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+            <button class="music-btn" id="muteBtn"><i class="fas fa-volume-up"></i></button>
             <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
         </div>
     </div>
 
-    <!-- Audio Elements for Player Sounds -->
-    <audio id="ronaldoSound" src="https://www.soundjay.com/misc/sounds/whip-crack-1.wav" preload="auto"></audio>
-    <audio id="messiSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" preload="auto"></audio>
-    <audio id="neymarSound" src="https://www.soundjay.com/buttons/sounds/button-09.wav" preload="auto"></audio>
-    <audio id="mbappeSound" src="https://www.soundjay.com/misc/sounds/censor-beep-1.wav" preload="auto"></audio>
-    
-    <!-- Background Music -->
-    <audio id="backgroundMusic" loop>
-        <source src="https://www.soundjay.com/misc/sounds/crowd-cheer-1.wav" type="audio/wav">
-    </audio>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-nav">
+                <a href="#" class="footer-btn">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="footer-btn" id="footerCommunity">
+                    <i class="fas fa-users"></i>
+                    <span>Community</span>
+                </a>
+                <a href="#" class="footer-btn" id="footerProfile">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="footer-btn" id="footerSupport">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </a>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // Sample posts data
@@ -754,71 +1082,163 @@
                 id: 1,
                 title: "Manchester City Dominates Derby Match",
                 category: "Premier League",
-                content: "In a stunning display of football, Manchester City defeated their rivals with a 3-1 victory. <span class='player-mention' data-player='Kevin De Bruyne'>Kevin De Bruyne</span> was exceptional in midfield, creating two goals and controlling the tempo of the game. The Belgian maestro proved once again why he's considered one of the best playmakers in the world.",
+                content: "In a stunning display of football, Manchester City defeated their rivals with a 3-1 victory. Kevin De Bruyne was exceptional in midfield, creating two goals and controlling the tempo of the game.",
+                image: "https://images.unsplash.com/photo-1594736797933-d0ea3ff8db41?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                video: "",
                 author: "Admin User",
                 authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
                 date: "2023-11-15",
-                isAdmin: true
+                isAdmin: true,
+                likes: 24,
+                comments: 5,
+                liked: false,
+                saved: false
             },
             {
                 id: 2,
                 title: "Barcelona's Young Talent Shines in El Clásico",
                 category: "La Liga",
-                content: "Despite the loss, Barcelona's young squad showed tremendous promise against Real Madrid. <span class='player-mention' data-player='Lionel Messi'>Lionel Messi</span> might be gone, but the future looks bright with talents like Pedri and Gavi controlling the midfield. Ansu Fati's return from injury could be the boost they need for the second half of the season.",
+                content: "Despite the loss, Barcelona's young squad showed tremendous promise against Real Madrid. The future looks bright with talents like Pedri and Gavi controlling the midfield.",
+                image: "https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                video: "",
                 author: "Admin User",
                 authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
                 date: "2023-11-14",
-                isAdmin: true
+                isAdmin: true,
+                likes: 18,
+                comments: 3,
+                liked: false,
+                saved: false
             },
             {
                 id: 3,
                 title: "Mbappé Sets New Champions League Record",
                 category: "Champions League",
-                content: "Paris Saint-Germain's <span class='player-mention' data-player='Kylian Mbappé'>Kylian Mbappé</span> became the youngest player to reach 40 Champions League goals with his brace against Bayern Munich. The French sensation continues to break records and establish himself as one of the world's elite players. His speed and finishing were on full display in the 2-2 draw.",
+                content: "Paris Saint-Germain's Kylian Mbappé became the youngest player to reach 40 Champions League goals with his brace against Bayern Munich.",
+                image: "",
+                video: "https://assets.mixkit.co/videos/preview/mixkit-football-player-dribbling-and-shooting-43375-large.mp4",
                 author: "Admin User",
                 authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
                 date: "2023-11-12",
-                isAdmin: true
-            },
-            {
-                id: 4,
-                title: "Serie A Title Race Heats Up",
-                category: "Serie A",
-                content: "With Napoli, AC Milan, and Inter Milan separated by just 5 points, the Serie A title race is shaping up to be one of the most exciting in years. <span class='player-mention' data-player='Victor Osimhen'>Victor Osimhen</span>'s goal-scoring form has been crucial for Napoli's challenge, while Inter's Lautaro Martinez continues to impress.",
-                author: "Admin User",
-                authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
-                date: "2023-11-10",
-                isAdmin: true
+                isAdmin: true,
+                likes: 42,
+                comments: 8,
+                liked: false,
+                saved: false
             }
         ];
 
-        // Player sounds mapping
-        const playerSounds = {
-            'Cristiano Ronaldo': 'ronaldoSound',
-            'Lionel Messi': 'messiSound',
-            'Neymar Jr': 'neymarSound',
-            'Kylian Mbappé': 'mbappeSound',
-            'Kevin De Bruyne': 'messiSound', // Reusing sound for demo
-            'Victor Osimhen': 'ronaldoSound' // Reusing sound for demo
-        };
+        // Sample comments
+        const sampleComments = [
+            {
+                id: 1,
+                postId: 1,
+                author: "FootballFan99",
+                authorImg: "https://randomuser.me/api/portraits/men/32.jpg",
+                text: "Great analysis! De Bruyne was absolutely phenomenal.",
+                date: "2023-11-15"
+            },
+            {
+                id: 2,
+                postId: 1,
+                author: "SoccerExpert",
+                authorImg: "https://randomuser.me/api/portraits/women/44.jpg",
+                text: "City's midfield dominance was the key to this victory.",
+                date: "2023-11-15"
+            }
+        ];
+
+        // App State
+        let currentUser = null;
+        let isAdmin = false;
+        let savedPosts = [];
+        let notifications = [
+            {
+                title: "New Post in Premier League",
+                message: "Manchester City wins the derby! Check out the match analysis.",
+                time: "5 minutes ago",
+                unread: true
+            },
+            {
+                title: "Transfer News",
+                message: "Breaking: Mbappé makes decision on future club.",
+                time: "1 hour ago",
+                unread: true
+            },
+            {
+                title: "Champions League Update",
+                message: "Quarter-final draw results are out!",
+                time: "3 hours ago",
+                unread: false
+            }
+        ];
 
         // DOM Elements
         const postsContainer = document.getElementById('postsContainer');
         const createPostBtn = document.getElementById('createPostBtn');
+        const adminCreatePostBtn = document.getElementById('adminCreatePostBtn');
         const createPostModal = document.getElementById('createPostModal');
         const closeModal = document.getElementById('closeModal');
         const postForm = document.getElementById('postForm');
         const notificationBell = document.getElementById('notificationBell');
         const notificationsPanel = document.getElementById('notificationsPanel');
+        const userProfile = document.getElementById('userProfile');
+        const authModal = document.getElementById('authModal');
+        const closeAuthModal = document.getElementById('closeAuthModal');
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const adminPanel = document.getElementById('adminPanel');
+        const profileLink = document.getElementById('profileLink');
+        const supportLink = document.getElementById('supportLink');
+        const supportModal = document.getElementById('supportModal');
+        const closeSupportModal = document.getElementById('closeSupportModal');
+        const cryptoBtn = document.getElementById('cryptoBtn');
+        const localBtn = document.getElementById('localBtn');
+        const cryptoPayment = document.getElementById('cryptoPayment');
+        const localPayment = document.getElementById('localPayment');
         const playBtn = document.getElementById('playBtn');
-        const backgroundMusic = document.getElementById('backgroundMusic');
+        const muteBtn = document.getElementById('muteBtn');
         const volumeSlider = document.getElementById('volumeSlider');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const footerCommunity = document.getElementById('footerCommunity');
+        const footerProfile = document.getElementById('footerProfile');
+        const footerSupport = document.getElementById('footerSupport');
 
         // Initialize the app
         function initApp() {
             renderPosts();
             setupEventListeners();
+            checkAuthStatus();
             playBackgroundMusic();
+        }
+
+        // Check if user is logged in
+        function checkAuthStatus() {
+            const savedUser = localStorage.getItem('sporteraUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                isAdmin = currentUser.email === 'suprememotive43@gmail.com';
+                updateUIForUser();
+            } else {
+                // Show auth modal if not logged in
+                setTimeout(() => {
+                    authModal.style.display = 'flex';
+                }, 1000);
+            }
+        }
+
+        // Update UI based on user status
+        function updateUIForUser() {
+            if (currentUser) {
+                userProfile.querySelector('span').textContent = currentUser.name;
+                if (isAdmin) {
+                    adminPanel.style.display = 'block';
+                    createPostBtn.style.display = 'flex';
+                    userProfile.innerHTML += ' <i class="fas fa-crown admin-badge"></i>';
+                }
+            }
         }
 
         // Render posts to the DOM
@@ -835,23 +1255,177 @@
                     </div>
                     <h3 class="post-title">${post.title}</h3>
                     <div class="post-content">${post.content}</div>
+                    ${post.image ? `<div class="post-media"><img src="${post.image}" alt="${post.title}"></div>` : ''}
+                    ${post.video ? `<div class="post-media"><video controls><source src="${post.video}" type="video/mp4">Your browser does not support the video tag.</video></div>` : ''}
                     <div class="post-footer">
+                        <div class="post-actions">
+                            <div class="post-action ${post.liked ? 'active' : ''}" data-post-id="${post.id}" data-action="like">
+                                <i class="fas fa-heart"></i>
+                                <span>${post.likes}</span>
+                            </div>
+                            <div class="post-action" data-post-id="${post.id}" data-action="comment">
+                                <i class="fas fa-comment"></i>
+                                <span>${post.comments}</span>
+                            </div>
+                            <div class="post-action ${post.saved ? 'active' : ''}" data-post-id="${post.id}" data-action="save">
+                                <i class="fas fa-bookmark"></i>
+                                <span>Save</span>
+                            </div>
+                        </div>
                         <div class="post-author">
                             <img src="${post.authorImg}" alt="${post.author}">
-                            <span>${post.author} ${post.isAdmin ? '<i class="fas fa-crown" style="color: gold;"></i>' : ''}</span>
+                            <span>${post.author} ${post.isAdmin ? '<i class="fas fa-crown admin-badge"></i>' : ''}</span>
+                        </div>
+                    </div>
+                    <div class="comments-section" id="comments-${post.id}" style="display: none;">
+                        <div class="comment-form">
+                            <input type="text" class="comment-input" placeholder="Write a comment...">
+                            <button class="comment-submit" data-post-id="${post.id}">Post</button>
+                        </div>
+                        <div class="comments-list" id="comments-list-${post.id}">
+                            <!-- Comments will be dynamically added here -->
                         </div>
                     </div>
                 `;
                 postsContainer.appendChild(postElement);
+                
+                // Render comments for this post
+                renderComments(post.id);
             });
             
-            // Add event listeners to player mentions
-            document.querySelectorAll('.player-mention').forEach(mention => {
-                mention.addEventListener('click', function() {
-                    const playerName = this.getAttribute('data-player');
-                    playPlayerSound(playerName);
+            // Add event listeners to post actions
+            document.querySelectorAll('.post-action').forEach(action => {
+                action.addEventListener('click', function() {
+                    const postId = parseInt(this.getAttribute('data-post-id'));
+                    const actionType = this.getAttribute('data-action');
+                    
+                    handlePostAction(postId, actionType, this);
                 });
             });
+            
+            // Add event listeners to comment buttons
+            document.querySelectorAll('.comment-submit').forEach(button => {
+                button.addEventListener('click', function() {
+                    const postId = parseInt(this.getAttribute('data-post-id'));
+                    const commentInput = this.previousElementSibling;
+                    const commentText = commentInput.value.trim();
+                    
+                    if (commentText && currentUser) {
+                        addComment(postId, commentText);
+                        commentInput.value = '';
+                    } else if (!currentUser) {
+                        authModal.style.display = 'flex';
+                    }
+                });
+            });
+        }
+
+        // Render comments for a post
+        function renderComments(postId) {
+            const commentsList = document.getElementById(`comments-list-${postId}`);
+            if (!commentsList) return;
+            
+            commentsList.innerHTML = '';
+            
+            const postComments = sampleComments.filter(comment => comment.postId === postId);
+            
+            if (postComments.length === 0) {
+                commentsList.innerHTML = '<p style="text-align: center; color: var(--gray);">No comments yet. Be the first to comment!</p>';
+                return;
+            }
+            
+            postComments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment';
+                commentElement.innerHTML = `
+                    <img src="${comment.authorImg}" alt="${comment.author}" class="comment-avatar">
+                    <div class="comment-content">
+                        <div class="comment-author">
+                            ${comment.author}
+                        </div>
+                        <div class="comment-text">${comment.text}</div>
+                        <div class="comment-actions">
+                            <span class="comment-action">Like</span>
+                            <span class="comment-action">Reply</span>
+                            <span class="comment-time">${formatDate(comment.date)}</span>
+                        </div>
+                    </div>
+                `;
+                commentsList.appendChild(commentElement);
+            });
+        }
+
+        // Add a new comment
+        function addComment(postId, text) {
+            const newComment = {
+                id: sampleComments.length + 1,
+                postId: postId,
+                author: currentUser.name,
+                authorImg: currentUser.avatar || 'https://randomuser.me/api/portraits/men/32.jpg',
+                text: text,
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            sampleComments.push(newComment);
+            
+            // Update post comment count
+            const post = samplePosts.find(p => p.id === postId);
+            if (post) {
+                post.comments += 1;
+            }
+            
+            renderComments(postId);
+            renderPosts(); // Refresh to update comment count
+        }
+
+        // Handle post actions (like, comment, save)
+        function handlePostAction(postId, actionType, element) {
+            if (!currentUser) {
+                authModal.style.display = 'flex';
+                return;
+            }
+            
+            const post = samplePosts.find(p => p.id === postId);
+            if (!post) return;
+            
+            switch(actionType) {
+                case 'like':
+                    if (post.liked) {
+                        post.likes -= 1;
+                        post.liked = false;
+                        element.classList.remove('active');
+                    } else {
+                        post.likes += 1;
+                        post.liked = true;
+                        element.classList.add('active');
+                    }
+                    element.querySelector('span').textContent = post.likes;
+                    break;
+                    
+                case 'comment':
+                    const commentsSection = document.getElementById(`comments-${postId}`);
+                    if (commentsSection.style.display === 'none') {
+                        commentsSection.style.display = 'block';
+                    } else {
+                        commentsSection.style.display = 'none';
+                    }
+                    break;
+                    
+                case 'save':
+                    if (post.saved) {
+                        post.saved = false;
+                        element.classList.remove('active');
+                        // Remove from saved posts
+                        savedPosts = savedPosts.filter(id => id !== postId);
+                    } else {
+                        post.saved = true;
+                        element.classList.add('active');
+                        // Add to saved posts
+                        savedPosts.push(postId);
+                    }
+                    localStorage.setItem('sporteraSavedPosts', JSON.stringify(savedPosts));
+                    break;
+            }
         }
 
         // Format date for display
@@ -860,49 +1434,16 @@
             return new Date(dateString).toLocaleDateString(undefined, options);
         }
 
-        // Play sound when player is mentioned
-        function playPlayerSound(playerName) {
-            const soundId = playerSounds[playerName];
-            if (soundId) {
-                const sound = document.getElementById(soundId);
-                if (sound) {
-                    sound.currentTime = 0;
-                    sound.play();
-                    
-                    // Show a small notification
-                    showTempNotification(`Playing ${playerName}'s signature sound!`);
-                }
-            }
-        }
-
-        // Show temporary notification
-        function showTempNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'notification-item unread';
-            notification.innerHTML = `
-                <div class="notification-title">Player Sound</div>
-                <div class="notification-message">${message}</div>
-                <div class="notification-time">Just now</div>
-            `;
-            
-            const notificationsList = document.querySelector('.notifications-list');
-            notificationsList.insertBefore(notification, notificationsList.firstChild);
-            
-            // Update notification count
-            const notificationCount = document.querySelector('.notification-count');
-            notificationCount.textContent = parseInt(notificationCount.textContent) + 1;
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.remove();
-                notificationCount.textContent = parseInt(notificationCount.textContent) - 1;
-            }, 3000);
-        }
-
         // Setup event listeners
         function setupEventListeners() {
             // Modal controls
             createPostBtn.addEventListener('click', () => {
+                if (currentUser && isAdmin) {
+                    createPostModal.style.display = 'flex';
+                }
+            });
+            
+            adminCreatePostBtn.addEventListener('click', () => {
                 createPostModal.style.display = 'flex';
             });
             
@@ -914,6 +1455,12 @@
                 if (e.target === createPostModal) {
                     createPostModal.style.display = 'none';
                 }
+                if (e.target === authModal) {
+                    authModal.style.display = 'none';
+                }
+                if (e.target === supportModal) {
+                    supportModal.style.display = 'none';
+                }
             });
             
             // Form submission
@@ -923,6 +1470,8 @@
                 const title = document.getElementById('postTitle').value;
                 const category = document.getElementById('postCategory').value;
                 const content = document.getElementById('postContent').value;
+                const image = document.getElementById('postImage').value;
+                const video = document.getElementById('postVideo').value;
                 
                 // Create new post object
                 const newPost = {
@@ -930,10 +1479,16 @@
                     title: title,
                     category: category,
                     content: content,
+                    image: image,
+                    video: video,
                     author: "Admin User",
                     authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
                     date: new Date().toISOString().split('T')[0],
-                    isAdmin: true
+                    isAdmin: true,
+                    likes: 0,
+                    comments: 0,
+                    liked: false,
+                    saved: false
                 };
                 
                 // Add to beginning of posts array
@@ -947,7 +1502,7 @@
                 postForm.reset();
                 
                 // Show success message
-                alert('Post published successfully!');
+                showNotification('Post published successfully!');
             });
             
             // Notification bell
@@ -962,11 +1517,169 @@
                 }
             });
             
+            // Auth modal tabs
+            loginTab.addEventListener('click', () => {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            });
+            
+            registerTab.addEventListener('click', () => {
+                registerTab.classList.add('active');
+                loginTab.classList.remove('active');
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+            });
+            
+            // Auth forms
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                // Simple validation
+                if (email && password) {
+                    // Check if admin login
+                    if (email === 'suprememotive43@gmail.com') {
+                        currentUser = {
+                            name: 'Admin User',
+                            email: email,
+                            avatar: 'https://randomuser.me/api/portraits/men/75.jpg'
+                        };
+                        isAdmin = true;
+                    } else {
+                        currentUser = {
+                            name: email.split('@')[0],
+                            email: email,
+                            avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+                        };
+                        isAdmin = false;
+                    }
+                    
+                    // Save user to localStorage
+                    localStorage.setItem('sporteraUser', JSON.stringify(currentUser));
+                    
+                    // Update UI
+                    updateUIForUser();
+                    
+                    // Close modal
+                    authModal.style.display = 'none';
+                    
+                    // Show welcome message
+                    showNotification(`Welcome to Sportera, ${currentUser.name}!`);
+                }
+            });
+            
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                
+                // Simple validation
+                if (name && email && password && password === confirmPassword) {
+                    currentUser = {
+                        name: name,
+                        email: email,
+                        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+                    };
+                    isAdmin = false;
+                    
+                    // Save user to localStorage
+                    localStorage.setItem('sporteraUser', JSON.stringify(currentUser));
+                    
+                    // Update UI
+                    updateUIForUser();
+                    
+                    // Close modal
+                    authModal.style.display = 'none';
+                    
+                    // Show welcome message
+                    showNotification(`Welcome to Sportera, ${currentUser.name}!`);
+                } else if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                }
+            });
+            
+            // User profile click
+            userProfile.addEventListener('click', () => {
+                if (currentUser) {
+                    // In a real app, this would open the user profile
+                    alert(`Profile page for ${currentUser.name} would open here.`);
+                } else {
+                    authModal.style.display = 'flex';
+                }
+            });
+            
+            // Profile link
+            profileLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentUser) {
+                    // In a real app, this would open the user profile
+                    alert(`Profile page for ${currentUser.name} would open here.`);
+                } else {
+                    authModal.style.display = 'flex';
+                }
+            });
+            
+            // Support link
+            supportLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                supportModal.style.display = 'flex';
+            });
+            
+            closeSupportModal.addEventListener('click', () => {
+                supportModal.style.display = 'none';
+            });
+            
+            // Payment methods
+            cryptoBtn.addEventListener('click', () => {
+                cryptoPayment.style.display = 'block';
+                localPayment.style.display = 'none';
+            });
+            
+            localBtn.addEventListener('click', () => {
+                localPayment.style.display = 'block';
+                cryptoPayment.style.display = 'none';
+            });
+            
             // Music controls
             playBtn.addEventListener('click', toggleMusic);
             
+            muteBtn.addEventListener('click', toggleMute);
+            
             volumeSlider.addEventListener('input', () => {
                 backgroundMusic.volume = volumeSlider.value / 100;
+            });
+            
+            // Footer buttons
+            footerCommunity.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentUser) {
+                    // In a real app, this would navigate to community page
+                    alert('Community page would open here. This feature is for premium users only.');
+                } else {
+                    authModal.style.display = 'flex';
+                }
+            });
+            
+            footerProfile.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentUser) {
+                    // In a real app, this would open the user profile
+                    alert(`Profile page for ${currentUser.name} would open here.`);
+                } else {
+                    authModal.style.display = 'flex';
+                }
+            });
+            
+            footerSupport.addEventListener('click', (e) => {
+                e.preventDefault();
+                supportModal.style.display = 'flex';
             });
             
             // Category selection
@@ -978,7 +1691,7 @@
                     this.classList.add('active');
                     
                     // In a real app, you would filter posts by category here
-                    showTempNotification(`Showing posts from ${this.textContent}`);
+                    showNotification(`Showing posts from ${this.textContent}`);
                 });
             });
         }
@@ -998,6 +1711,41 @@
                 backgroundMusic.pause();
                 playBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
+        }
+        
+        function toggleMute() {
+            if (backgroundMusic.muted) {
+                backgroundMusic.muted = false;
+                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                backgroundMusic.muted = true;
+                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            // Create a temporary notification element
+            const notification = document.createElement('div');
+            notification.className = 'notification-item unread';
+            notification.innerHTML = `
+                <div class="notification-title">System Notification</div>
+                <div class="notification-message">${message}</div>
+                <div class="notification-time">Just now</div>
+            `;
+            
+            const notificationsList = document.querySelector('.notifications-list');
+            notificationsList.insertBefore(notification, notificationsList.firstChild);
+            
+            // Update notification count
+            const notificationCount = document.querySelector('.notification-count');
+            notificationCount.textContent = parseInt(notificationCount.textContent) + 1;
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+                notificationCount.textContent = parseInt(notificationCount.textContent) - 1;
+            }, 3000);
         }
 
         // Initialize the app when DOM is loaded
