@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportera - Football Community</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #1e6b30;
+            --primary-dark: #155022;
+            --secondary: #f8c300;
+            --accent: #d40000;
+            --light: #f5f5f5;
+            --dark: #333;
+            --gray: #777;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1575361204480-aadea25e6e68?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(30, 107, 48, 0.9);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 2.2rem;
+            color: var(--secondary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: var(--secondary);
+            color: var(--dark);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--light);
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid var(--secondary);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: rgba(30, 107, 48, 0.85);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            height: fit-content;
+        }
+
+        .sidebar h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .categories {
+            list-style: none;
+        }
+
+        .categories li {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .categories li:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .categories li.active {
+            background: var(--secondary);
+            color: var(--dark);
+            font-weight: bold;
+        }
+
+        .categories li i {
+            font-size: 1.2rem;
+        }
+
+        .subscription-status {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Posts Section */
+        .posts-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            color: var(--secondary);
+            font-size: 1.8rem;
+        }
+
+        .create-post-btn {
+            background: var(--secondary);
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .create-post-btn:hover {
+            background: #e6b400;
+            transform: scale(1.05);
+        }
+
+        .posts-container {
+            display: grid;
+            gap: 25px;
+        }
+
+        .post-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .post-category {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .post-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .post-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .post-content {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .post-author img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+        }
+
+        .player-mention {
+            background: rgba(248, 195, 0, 0.2);
+            padding: 2px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .player-mention:hover {
+            background: rgba(248, 195, 0, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e6b30, #155022);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--light);
+        }
+
+        .modal h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--secondary);
+            color: var(--dark);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #e6b400;
+        }
+
+        /* Notifications Panel */
+        .notifications-panel {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            width: 350px;
+            background: rgba(30, 107, 48, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            z-index: 200;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notifications-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notifications-header h3 {
+            color: var(--secondary);
+        }
+
+        .clear-notifications {
+            background: none;
+            border: none;
+            color: var(--light);
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .notification-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .notification-item.unread {
+            background: rgba(248, 195, 0, 0.1);
+        }
+
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+
+        .notification-message {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        /* Music Player */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(30, 107, 48, 0.9);
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .music-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .music-btn {
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .music-btn:hover {
+            color: var(--secondary);
+        }
+
+        .volume-slider {
+            width: 80px;
+        }
+
+        /* Football Animation */
+        .football {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: url('https://cdn-icons-png.flaticon.com/512/53/53283.png') no-repeat center center;
+            background-size: contain;
+            z-index: -1;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(100px, 100px) rotate(90deg);
+            }
+            50% {
+                transform: translate(200px, 0) rotate(180deg);
+            }
+            75% {
+                transform: translate(100px, -100px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .posts-section {
+                order: 1;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .notifications-panel {
+                width: 300px;
+                right: 10px;
+            }
+            
+            .music-player {
+                bottom: 10px;
+                right: 10px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Football Animation -->
+    <div class="football" style="top: 10%; left: 5%;"></div>
+    <div class="football" style="top: 20%; left: 80%;"></div>
+    <div class="football" style="top: 60%; left: 10%;"></div>
+    <div class="football" style="top: 80%; left: 70%;"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-futbol"></i>
+                    <h1>Sportera</h1>
+                </div>
+                
+                <div class="nav-links">
+                    <a href="#" class="active">Home</a>
+                    <a href="#">Matches</a>
+                    <a href="#">News</a>
+                    <a href="#">Teams</a>
+                    <a href="#">Players</a>
+                    <a href="#">Community</a>
+                </div>
+                
+                <div class="user-actions">
+                    <div class="notification-bell" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </div>
+                    
+                    <div class="user-profile">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Profile">
+                        <span>John Doe</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notifications Panel -->
+    <div class="notifications-panel" id="notificationsPanel">
+        <div class="notifications-header">
+            <h3>Notifications</h3>
+            <button class="clear-notifications">Clear All</button>
+        </div>
+        <div class="notifications-list">
+            <div class="notification-item unread">
+                <div class="notification-title">New Post in Premier League</div>
+                <div class="notification-message">Manchester City wins the derby! Check out the match analysis.</div>
+                <div class="notification-time">5 minutes ago</div>
+            </div>
+            <div class="notification-item unread">
+                <div class="notification-title">Transfer News</div>
+                <div class="notification-message">Breaking: Mbappé makes decision on future club.</div>
+                <div class="notification-time">1 hour ago</div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-title">Champions League Update</div>
+                <div class="notification-message">Quarter-final draw results are out!</div>
+                <div class="notification-time">3 hours ago</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h2>Football Categories</h2>
+                <ul class="categories">
+                    <li class="active"><i class="fas fa-trophy"></i> Premier League</li>
+                    <li><i class="fas fa-futbol"></i> La Liga</li>
+                    <li><i class="fas fa-flag"></i> Serie A</li>
+                    <li><i class="fas fa-shield-alt"></i> Bundesliga</li>
+                    <li><i class="fas fa-star"></i> Champions League</li>
+                    <li><i class="fas fa-globe"></i> World Cup</li>
+                    <li><i class="fas fa-running"></i> Transfers</li>
+                    <li><i class="fas fa-users"></i> Team News</li>
+                </ul>
+                
+                <div class="subscription-status">
+                    <p><i class="fas fa-bell"></i> You're subscribed to 4 categories</p>
+                    <p>Get notified when admins post new content</p>
+                </div>
+            </div>
+            
+            <!-- Posts Section -->
+            <div class="posts-section">
+                <div class="section-header">
+                    <h2>Latest Football News & Updates</h2>
+                    <button class="create-post-btn" id="createPostBtn">
+                        <i class="fas fa-plus"></i> Create Post
+                    </button>
+                </div>
+                
+                <div class="posts-container" id="postsContainer">
+                    <!-- Posts will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div class="modal" id="createPostModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2>Create New Post</h2>
+            <form id="postForm">
+                <div class="form-group">
+                    <label for="postTitle">Title</label>
+                    <input type="text" id="postTitle" class="form-control" placeholder="Enter post title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postCategory">Category</label>
+                    <select id="postCategory" class="form-control" required>
+                        <option value="">Select a category</option>
+                        <option value="Premier League">Premier League</option>
+                        <option value="La Liga">La Liga</option>
+                        <option value="Serie A">Serie A</option>
+                        <option value="Bundesliga">Bundesliga</option>
+                        <option value="Champions League">Champions League</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postContent">Content</label>
+                    <textarea id="postContent" class="form-control" placeholder="Write your post content here..." required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Publish Post</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Music Player -->
+    <div class="music-player">
+        <div class="music-info">
+            <i class="fas fa-music"></i>
+            <span>Football Anthems Mix</span>
+        </div>
+        <div class="music-controls">
+            <button class="music-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
+            <button class="music-btn" id="playBtn"><i class="fas fa-play"></i></button>
+            <button class="music-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
+        </div>
+    </div>
+
+    <!-- Audio Elements for Player Sounds -->
+    <audio id="ronaldoSound" src="https://www.soundjay.com/misc/sounds/whip-crack-1.wav" preload="auto"></audio>
+    <audio id="messiSound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" preload="auto"></audio>
+    <audio id="neymarSound" src="https://www.soundjay.com/buttons/sounds/button-09.wav" preload="auto"></audio>
+    <audio id="mbappeSound" src="https://www.soundjay.com/misc/sounds/censor-beep-1.wav" preload="auto"></audio>
+    
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop>
+        <source src="https://www.soundjay.com/misc/sounds/crowd-cheer-1.wav" type="audio/wav">
+    </audio>
+
+    <script>
+        // Sample posts data
+        const samplePosts = [
+            {
+                id: 1,
+                title: "Manchester City Dominates Derby Match",
+                category: "Premier League",
+                content: "In a stunning display of football, Manchester City defeated their rivals with a 3-1 victory. <span class='player-mention' data-player='Kevin De Bruyne'>Kevin De Bruyne</span> was exceptional in midfield, creating two goals and controlling the tempo of the game. The Belgian maestro proved once again why he's considered one of the best playmakers in the world.",
+                author: "Admin User",
+                authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
+                date: "2023-11-15",
+                isAdmin: true
+            },
+            {
+                id: 2,
+                title: "Barcelona's Young Talent Shines in El Clásico",
+                category: "La Liga",
+                content: "Despite the loss, Barcelona's young squad showed tremendous promise against Real Madrid. <span class='player-mention' data-player='Lionel Messi'>Lionel Messi</span> might be gone, but the future looks bright with talents like Pedri and Gavi controlling the midfield. Ansu Fati's return from injury could be the boost they need for the second half of the season.",
+                author: "Admin User",
+                authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
+                date: "2023-11-14",
+                isAdmin: true
+            },
+            {
+                id: 3,
+                title: "Mbappé Sets New Champions League Record",
+                category: "Champions League",
+                content: "Paris Saint-Germain's <span class='player-mention' data-player='Kylian Mbappé'>Kylian Mbappé</span> became the youngest player to reach 40 Champions League goals with his brace against Bayern Munich. The French sensation continues to break records and establish himself as one of the world's elite players. His speed and finishing were on full display in the 2-2 draw.",
+                author: "Admin User",
+                authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
+                date: "2023-11-12",
+                isAdmin: true
+            },
+            {
+                id: 4,
+                title: "Serie A Title Race Heats Up",
+                category: "Serie A",
+                content: "With Napoli, AC Milan, and Inter Milan separated by just 5 points, the Serie A title race is shaping up to be one of the most exciting in years. <span class='player-mention' data-player='Victor Osimhen'>Victor Osimhen</span>'s goal-scoring form has been crucial for Napoli's challenge, while Inter's Lautaro Martinez continues to impress.",
+                author: "Admin User",
+                authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
+                date: "2023-11-10",
+                isAdmin: true
+            }
+        ];
+
+        // Player sounds mapping
+        const playerSounds = {
+            'Cristiano Ronaldo': 'ronaldoSound',
+            'Lionel Messi': 'messiSound',
+            'Neymar Jr': 'neymarSound',
+            'Kylian Mbappé': 'mbappeSound',
+            'Kevin De Bruyne': 'messiSound', // Reusing sound for demo
+            'Victor Osimhen': 'ronaldoSound' // Reusing sound for demo
+        };
+
+        // DOM Elements
+        const postsContainer = document.getElementById('postsContainer');
+        const createPostBtn = document.getElementById('createPostBtn');
+        const createPostModal = document.getElementById('createPostModal');
+        const closeModal = document.getElementById('closeModal');
+        const postForm = document.getElementById('postForm');
+        const notificationBell = document.getElementById('notificationBell');
+        const notificationsPanel = document.getElementById('notificationsPanel');
+        const playBtn = document.getElementById('playBtn');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const volumeSlider = document.getElementById('volumeSlider');
+
+        // Initialize the app
+        function initApp() {
+            renderPosts();
+            setupEventListeners();
+            playBackgroundMusic();
+        }
+
+        // Render posts to the DOM
+        function renderPosts() {
+            postsContainer.innerHTML = '';
+            
+            samplePosts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post-card';
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <span class="post-category">${post.category}</span>
+                        <span class="post-date">${formatDate(post.date)}</span>
+                    </div>
+                    <h3 class="post-title">${post.title}</h3>
+                    <div class="post-content">${post.content}</div>
+                    <div class="post-footer">
+                        <div class="post-author">
+                            <img src="${post.authorImg}" alt="${post.author}">
+                            <span>${post.author} ${post.isAdmin ? '<i class="fas fa-crown" style="color: gold;"></i>' : ''}</span>
+                        </div>
+                    </div>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+            
+            // Add event listeners to player mentions
+            document.querySelectorAll('.player-mention').forEach(mention => {
+                mention.addEventListener('click', function() {
+                    const playerName = this.getAttribute('data-player');
+                    playPlayerSound(playerName);
+                });
+            });
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Play sound when player is mentioned
+        function playPlayerSound(playerName) {
+            const soundId = playerSounds[playerName];
+            if (soundId) {
+                const sound = document.getElementById(soundId);
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play();
+                    
+                    // Show a small notification
+                    showTempNotification(`Playing ${playerName}'s signature sound!`);
+                }
+            }
+        }
+
+        // Show temporary notification
+        function showTempNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification-item unread';
+            notification.innerHTML = `
+                <div class="notification-title">Player Sound</div>
+                <div class="notification-message">${message}</div>
+                <div class="notification-time">Just now</div>
+            `;
+            
+            const notificationsList = document.querySelector('.notifications-list');
+            notificationsList.insertBefore(notification, notificationsList.firstChild);
+            
+            // Update notification count
+            const notificationCount = document.querySelector('.notification-count');
+            notificationCount.textContent = parseInt(notificationCount.textContent) + 1;
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+                notificationCount.textContent = parseInt(notificationCount.textContent) - 1;
+            }, 3000);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Modal controls
+            createPostBtn.addEventListener('click', () => {
+                createPostModal.style.display = 'flex';
+            });
+            
+            closeModal.addEventListener('click', () => {
+                createPostModal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', (e) => {
+                if (e.target === createPostModal) {
+                    createPostModal.style.display = 'none';
+                }
+            });
+            
+            // Form submission
+            postForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const title = document.getElementById('postTitle').value;
+                const category = document.getElementById('postCategory').value;
+                const content = document.getElementById('postContent').value;
+                
+                // Create new post object
+                const newPost = {
+                    id: samplePosts.length + 1,
+                    title: title,
+                    category: category,
+                    content: content,
+                    author: "Admin User",
+                    authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
+                    date: new Date().toISOString().split('T')[0],
+                    isAdmin: true
+                };
+                
+                // Add to beginning of posts array
+                samplePosts.unshift(newPost);
+                
+                // Re-render posts
+                renderPosts();
+                
+                // Close modal and reset form
+                createPostModal.style.display = 'none';
+                postForm.reset();
+                
+                // Show success message
+                alert('Post published successfully!');
+            });
+            
+            // Notification bell
+            notificationBell.addEventListener('click', () => {
+                notificationsPanel.style.display = notificationsPanel.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Close notifications when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!notificationBell.contains(e.target) && !notificationsPanel.contains(e.target)) {
+                    notificationsPanel.style.display = 'none';
+                }
+            });
+            
+            // Music controls
+            playBtn.addEventListener('click', toggleMusic);
+            
+            volumeSlider.addEventListener('input', () => {
+                backgroundMusic.volume = volumeSlider.value / 100;
+            });
+            
+            // Category selection
+            document.querySelectorAll('.categories li').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.categories li').forEach(li => {
+                        li.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // In a real app, you would filter posts by category here
+                    showTempNotification(`Showing posts from ${this.textContent}`);
+                });
+            });
+        }
+
+        // Background music controls
+        function playBackgroundMusic() {
+            backgroundMusic.volume = 0.3;
+            // In a real app, you would play actual football anthems
+            // For demo purposes, we're using a crowd cheer sound
+        }
+        
+        function toggleMusic() {
+            if (backgroundMusic.paused) {
+                backgroundMusic.play();
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                backgroundMusic.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
