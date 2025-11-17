@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sportera - Football Support Platform</title>
+    <title>SportZone - Your Sports News Hub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,1742 +14,1055 @@
         }
 
         :root {
-            --primary: #1e6b30;
-            --primary-dark: #155022;
-            --secondary: #f8c300;
-            --accent: #d40000;
-            --light: #f5f5f5;
-            --dark: #333;
-            --gray: #777;
-            --card-bg: rgba(255, 255, 255, 0.1);
+            --primary: #1a73e8;
+            --secondary: #e53935;
+            --dark: #202124;
+            --light: #f8f9fa;
+            --gray: #5f6368;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         body {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                        url('https://images.unsplash.com/photo-1575361204480-aadea25e6e68?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80') no-repeat center center fixed;
-            background-size: cover;
-            color: var(--light);
-            min-height: 100vh;
-            overflow-x: hidden;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
 
         /* Header Styles */
         header {
-            background: rgba(30, 107, 48, 0.9);
-            padding: 15px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .header-content {
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 15px 0;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
-        }
-
-        .logo h1 {
-            font-size: 2.2rem;
-            color: var(--secondary);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
         }
 
         .logo i {
-            font-size: 2.5rem;
             color: var(--secondary);
         }
 
-        .nav-links {
+        .search-bar {
             display: flex;
-            gap: 25px;
-        }
-
-        .nav-links a {
-            color: var(--light);
-            text-decoration: none;
-            font-weight: 600;
+            align-items: center;
+            background: var(--light);
+            border-radius: 30px;
             padding: 8px 15px;
-            border-radius: 5px;
-            transition: all 0.3s;
+            width: 40%;
         }
 
-        .nav-links a:hover {
-            background: var(--secondary);
-            color: var(--dark);
+        .search-bar input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            padding: 5px 10px;
+            outline: none;
+        }
+
+        .search-bar button {
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
         }
 
         .user-actions {
             display: flex;
-            align-items: center;
             gap: 15px;
         }
 
-        .notification-bell {
+        .user-actions button {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.3s;
+        }
+
+        .user-actions button:hover {
+            color: var(--primary);
+        }
+
+        nav {
+            border-top: 1px solid #eee;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        .nav-links li {
+            margin-right: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            padding: 5px 0;
             position: relative;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: var(--light);
+            transition: color 0.3s;
         }
 
-        .notification-count {
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a.active::after {
+            content: '';
             position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: bold;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px;
         }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px 15px;
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1459865264687-595d652de67e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            margin-bottom: 40px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
             border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
             cursor: pointer;
         }
 
-        .user-profile img {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: 2px solid var(--secondary);
+        .btn:hover {
+            background: #0d5bb9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: #c62828;
         }
 
         /* Main Content */
         .main-content {
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 30px;
-            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* Featured News */
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+
+        .featured-news {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .news-content {
+            padding: 20px;
+        }
+
+        .news-category {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .news-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        /* Latest News */
+        .latest-news {
+            margin-bottom: 40px;
+        }
+
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .news-item {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .news-item img {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .news-item-content h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
         }
 
         /* Sidebar */
         .sidebar {
-            background: rgba(30, 107, 48, 0.85);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
 
-        .sidebar h2 {
-            color: var(--secondary);
-            margin-bottom: 20px;
+        .sidebar-widget {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .widget-title {
+            font-size: 18px;
+            margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid var(--secondary);
+            border-bottom: 1px solid #eee;
         }
 
-        .categories {
-            list-style: none;
-        }
-
-        .categories li {
-            margin-bottom: 15px;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
+        .match-list {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .categories li:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
-        }
-
-        .categories li.active {
-            background: var(--secondary);
-            color: var(--dark);
-            font-weight: bold;
-        }
-
-        .categories li i {
-            font-size: 1.2rem;
-        }
-
-        .subscription-status {
-            margin-top: 25px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            font-size: 0.9rem;
-        }
-
-        /* Posts Section */
-        .posts-section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .section-header {
+        .match-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
         }
 
-        .section-header h2 {
-            color: var(--secondary);
-            font-size: 1.8rem;
-        }
-
-        .create-post-btn {
-            background: var(--secondary);
-            color: var(--dark);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
+        .match-teams {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .create-post-btn:hover {
-            background: #e6b400;
-            transform: scale(1.05);
-        }
-
-        .posts-container {
-            display: grid;
-            gap: 25px;
-        }
-
-        .post-card {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s;
-            border-left: 5px solid var(--secondary);
-        }
-
-        .post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .post-category {
-            background: var(--primary);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .post-date {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .post-title {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: var(--secondary);
-        }
-
-        .post-content {
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .post-media {
-            margin: 15px 0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .post-media img, .post-media video {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .post-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .post-actions {
-            display: flex;
-            gap: 20px;
-        }
-
-        .post-action {
-            display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
         }
 
-        .post-action:hover {
-            color: var(--secondary);
+        .match-score {
+            font-weight: bold;
+            font-size: 18px;
         }
 
-        .post-action.active {
-            color: var(--secondary);
-        }
-
-        .post-author {
+        .team {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .post-author img {
-            width: 35px;
-            height: 35px;
+        .team-logo {
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
-        }
-
-        .admin-badge {
-            color: var(--secondary);
-            font-size: 0.8rem;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
+            background: #eee;
+            display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 12px;
         }
 
-        .modal-content {
-            background: linear-gradient(135deg, #1e6b30, #155022);
-            width: 90%;
-            max-width: 600px;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            position: relative;
+        .team-name {
+            font-size: 14px;
         }
 
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--light);
-        }
-
-        .modal h2 {
-            color: var(--secondary);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--light);
-            font-size: 1rem;
-        }
-
-        textarea.form-control {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .submit-btn {
-            background: var(--secondary);
-            color: var(--dark);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-        }
-
-        .submit-btn:hover {
-            background: #e6b400;
-        }
-
-        /* Notifications Panel */
-        .notifications-panel {
-            display: none;
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            width: 350px;
-            background: rgba(30, 107, 48, 0.95);
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            z-index: 200;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .notifications-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        .top-players {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .notifications-header h3 {
-            color: var(--secondary);
-        }
-
-        .clear-notifications {
-            background: none;
-            border: none;
-            color: var(--light);
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .notification-item {
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .notification-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .notification-item.unread {
-            background: rgba(248, 195, 0, 0.1);
-        }
-
-        .notification-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--secondary);
-        }
-
-        .notification-message {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .notification-time {
-            font-size: 0.8rem;
-            color: var(--gray);
-            margin-top: 5px;
-        }
-
-        /* Music Player */
-        .music-player {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(30, 107, 48, 0.9);
-            border-radius: 50px;
-            padding: 10px 20px;
+        .player {
             display: flex;
             align-items: center;
             gap: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 100;
         }
 
-        .music-info {
+        .player img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .player-info h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .player-info p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        /* Video Section */
+        .video-section {
+            margin-bottom: 40px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .video-card:hover .video-thumbnail img {
+            transform: scale(1.05);
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
         }
 
-        .music-controls {
+        .video-content {
+            padding: 15px;
+        }
+
+        .video-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* Newsletter */
+        .newsletter {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+
+        .newsletter h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .newsletter p {
+            max-width: 600px;
+            margin: 0 auto 25px;
+        }
+
+        .newsletter-form {
             display: flex;
-            gap: 10px;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
-        .music-btn {
-            background: none;
+        .newsletter-form input {
+            flex: 1;
+            padding: 15px;
             border: none;
-            color: var(--light);
-            font-size: 1.2rem;
+            border-radius: 30px 0 0 30px;
+            outline: none;
+        }
+
+        .newsletter-form button {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 30px 30px 0;
             cursor: pointer;
-            transition: all 0.3s;
+            font-weight: 600;
+            transition: background 0.3s;
         }
 
-        .music-btn:hover {
-            color: var(--secondary);
-        }
-
-        .volume-slider {
-            width: 80px;
+        .newsletter-form button:hover {
+            background: #000;
         }
 
         /* Footer */
-        .footer {
-            background: rgba(30, 107, 48, 0.9);
-            padding: 20px 0;
-            margin-top: 50px;
-            border-top: 2px solid var(--secondary);
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 50px 0 20px;
         }
 
-        .footer-nav {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
         }
 
-        .footer-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            color: var(--light);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        .footer-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--secondary);
-        }
-
-        .footer-btn i {
-            font-size: 1.5rem;
-        }
-
-        /* Login/Register Modal */
-        .auth-modal {
-            display: none;
-        }
-
-        .auth-tabs {
-            display: flex;
+        .footer-column h3 {
+            font-size: 18px;
             margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            padding-bottom: 10px;
         }
 
-        .auth-tab {
-            flex: 1;
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+        }
+
+        .copyright {
             text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .auth-tab.active {
-            border-bottom: 2px solid var(--secondary);
-            color: var(--secondary);
-            font-weight: bold;
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bbb;
+            font-size: 14px;
         }
 
         /* Responsive Design */
-        @media (max-width: 900px) {
+        @media (max-width: 992px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
             
-            .sidebar {
-                order: 2;
+            .featured-news {
+                grid-template-columns: 1fr;
             }
             
-            .posts-section {
-                order: 1;
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
             
-            .header-content {
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-top {
                 flex-direction: column;
                 gap: 15px;
             }
             
+            .search-bar {
+                width: 100%;
+            }
+            
             .nav-links {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
                 gap: 10px;
             }
+            
+            .newsletter-form input,
+            .newsletter-form button {
+                border-radius: 30px;
+                width: 100%;
+            }
         }
 
-        @media (max-width: 600px) {
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
+        @media (max-width: 576px) {
+            .footer-content {
+                grid-template-columns: 1fr;
             }
             
-            .notifications-panel {
-                width: 300px;
-                right: 10px;
+            .news-item {
+                flex-direction: column;
             }
             
-            .music-player {
-                bottom: 10px;
-                right: 10px;
-                padding: 8px 15px;
+            .news-item img {
+                width: 100%;
+                height: 150px;
             }
-            
-            .footer-nav {
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-        }
-
-        /* Admin Panel */
-        .admin-panel {
-            display: none;
-            background: rgba(248, 195, 0, 0.1);
-            border: 2px solid var(--secondary);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .admin-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--secondary);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--gray);
-        }
-
-        /* Premium Badge */
-        .premium-badge {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            color: var(--dark);
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        /* Comment Section */
-        .comments-section {
-            margin-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 15px;
-        }
-
-        .comment-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .comment-input {
-            flex: 1;
-            padding: 10px 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--light);
-        }
-
-        .comment-submit {
-            background: var(--secondary);
-            color: var(--dark);
-            border: none;
-            border-radius: 20px;
-            padding: 0 20px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .comment {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .comment-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-
-        .comment-content {
-            flex: 1;
-        }
-
-        .comment-author {
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .comment-text {
-            margin-bottom: 5px;
-        }
-
-        .comment-actions {
-            display: flex;
-            gap: 15px;
-            font-size: 0.8rem;
-            color: var(--gray);
-        }
-
-        .comment-action {
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .comment-action:hover {
-            color: var(--secondary);
         }
     </style>
 </head>
 <body>
-    <!-- Background Music -->
-    <audio id="backgroundMusic" loop>
-        <source src="https://www.soundjay.com/misc/sounds/crowd-cheer-1.wav" type="audio/wav">
-    </audio>
-
     <!-- Header -->
     <header>
         <div class="container">
-            <div class="header-content">
+            <div class="header-top">
                 <div class="logo">
                     <i class="fas fa-futbol"></i>
-                    <h1>Sportera</h1>
+                    <span>SportZone</span>
                 </div>
-                
-                <div class="nav-links">
-                    <a href="#" class="active">Home</a>
-                    <a href="#">Community</a>
-                    <a href="#" id="profileLink">Profile</a>
-                    <a href="#" id="supportLink">Support</a>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for news, teams, players...">
+                    <button><i class="fas fa-search"></i></button>
                 </div>
-                
                 <div class="user-actions">
-                    <div class="notification-bell" id="notificationBell">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-count">3</span>
-                    </div>
-                    
-                    <div class="user-profile" id="userProfile">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Profile">
-                        <span>Guest</span>
-                    </div>
+                    <button><i class="fas fa-bell"></i></button>
+                    <button><i class="fas fa-user"></i></button>
+                    <button><i class="fas fa-cog"></i></button>
                 </div>
             </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#">Football</a></li>
+                    <li><a href="#">Basketball</a></li>
+                    <li><a href="#">Tennis</a></li>
+                    <li><a href="#">Cricket</a></li>
+                    <li><a href="#">Rugby</a></li>
+                    <li><a href="#">Golf</a></li>
+                    <li><a href="#">Olympics</a></li>
+                    <li><a href="#">More</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
-    <!-- Notifications Panel -->
-    <div class="notifications-panel" id="notificationsPanel">
-        <div class="notifications-header">
-            <h3>Notifications</h3>
-            <button class="clear-notifications">Clear All</button>
-        </div>
-        <div class="notifications-list">
-            <div class="notification-item unread">
-                <div class="notification-title">New Post in Premier League</div>
-                <div class="notification-message">Manchester City wins the derby! Check out the match analysis.</div>
-                <div class="notification-time">5 minutes ago</div>
-            </div>
-            <div class="notification-item unread">
-                <div class="notification-title">Transfer News</div>
-                <div class="notification-message">Breaking: Mbappé makes decision on future club.</div>
-                <div class="notification-time">1 hour ago</div>
-            </div>
-            <div class="notification-item">
-                <div class="notification-title">Champions League Update</div>
-                <div class="notification-message">Quarter-final draw results are out!</div>
-                <div class="notification-time">3 hours ago</div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Champions League Final: City Crowned European Champions</h1>
+                <p>Manchester City clinch their first Champions League title with a stunning victory over Inter Milan in a dramatic final in Istanbul.</p>
+                <a href="#" class="btn">Read Full Story</a>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Main Content -->
     <div class="container">
-        <!-- Admin Panel (Visible only to admin) -->
-        <div class="admin-panel" id="adminPanel">
-            <h2><i class="fas fa-crown"></i> Admin Dashboard</h2>
-            <div class="admin-stats">
-                <div class="stat-card">
-                    <div class="stat-value">24</div>
-                    <div class="stat-label">Total Posts</div>
+        <div class="main-content">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Featured News -->
+                <h2 class="section-title">Featured News</h2>
+                <div class="featured-news">
+                    <div class="news-card">
+                        <img src="https://images.unsplash.com/photo-1575361204480-aadea25e6e68?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80" alt="Football">
+                        <div class="news-content">
+                            <span class="news-category">Football</span>
+                            <h3 class="news-title">Mbappe Transfer Saga: Real Madrid Close In On Deal</h3>
+                            <p>French superstar Kylian Mbappe is reportedly close to finalizing a move to Real Madrid after months of negotiations.</p>
+                            <div class="news-meta">
+                                <span><i class="far fa-clock"></i> 2 hours ago</span>
+                                <span><i class="far fa-comment"></i> 142 comments</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="news-card">
+                        <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2090&q=80" alt="Basketball">
+                        <div class="news-content">
+                            <span class="news-category">Basketball</span>
+                            <h3 class="news-title">NBA Finals: Nuggets Claim First Championship</h3>
+                            <p>Denver Nuggets make history by winning their first NBA title after defeating Miami Heat in a thrilling Game 5.</p>
+                            <div class="news-meta">
+                                <span><i class="far fa-clock"></i> 5 hours ago</span>
+                                <span><i class="far fa-comment"></i> 89 comments</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value">1,248</div>
-                    <div class="stat-label">Total Users</div>
+
+                <!-- Latest News -->
+                <div class="latest-news">
+                    <h2 class="section-title">Latest News</h2>
+                    <div class="news-list">
+                        <div class="news-item">
+                            <img src="https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Tennis">
+                            <div class="news-item-content">
+                                <h3>Wimbledon 2023: Djokovic Seeks Record-Tying 8th Title</h3>
+                                <p>The Serbian superstar begins his campaign at the All England Club against a qualifier in the first round.</p>
+                                <div class="news-meta">
+                                    <span><i class="far fa-clock"></i> 1 hour ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="news-item">
+                            <img src="https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1607&q=80" alt="Cricket">
+                            <div class="news-item-content">
+                                <h3>Ashes 2023: England Fight Back on Day 2 at Lord's</h3>
+                                <p>Ben Stokes leads England's recovery with a magnificent century after early wickets.</p>
+                                <div class="news-meta">
+                                    <span><i class="far fa-clock"></i> 3 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="news-item">
+                            <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Golf">
+                            <div class="news-item-content">
+                                <h3>US Open: Underdog Claims Surprise Victory</h3>
+                                <p>Unheralded golfer stuns the field to win his first major championship at Los Angeles Country Club.</p>
+                                <div class="news-meta">
+                                    <span><i class="far fa-clock"></i> 6 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value">56</div>
-                    <div class="stat-label">Premium Users</div>
+
+                <!-- Video Section -->
+                <div class="video-section">
+                    <h2 class="section-title">Top Videos</h2>
+                    <div class="video-grid">
+                        <div class="video-card">
+                            <div class="video-thumbnail">
+                                <img src="https://images.unsplash.com/photo-1556056504-5c7696c4c28d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1976&q=80" alt="Video">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <h3 class="video-title">Champions League Final Highlights</h3>
+                                <div class="news-meta">
+                                    <span><i class="far fa-clock"></i> 2 days ago</span>
+                                    <span><i class="fas fa-eye"></i> 1.2M views</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-card">
+                            <div class="video-thumbnail">
+                                <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Video">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <h3 class="video-title">NBA Finals Game 5: The Decider</h3>
+                                <div class="news-meta">
+                                    <span><i class="far fa-clock"></i> 3 days ago</span>
+                                    <span><i class="fas fa-eye"></i> 890K views</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-card">
+                            <div class="video-thumbnail">
+                                <img src="https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Video">
+                                <div class="play-button">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <div class="video-content">
+                                <h3 class="video-title">Top 10 Goals of the Season</h3>
+                                <div class="news-meta">
+                                    <span><i class="far fa-clock"></i> 5 days ago</span>
+                                    <span><i class="fas fa-eye"></i> 2.1M views</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <button class="create-post-btn" id="adminCreatePostBtn">
-                <i class="fas fa-plus"></i> Create New Post
-            </button>
-        </div>
 
-        <div class="main-content">
             <!-- Sidebar -->
             <div class="sidebar">
-                <h2>Football Categories</h2>
-                <ul class="categories">
-                    <li class="active"><i class="fas fa-trophy"></i> Premier League</li>
-                    <li><i class="fas fa-futbol"></i> La Liga</li>
-                    <li><i class="fas fa-flag"></i> Serie A</li>
-                    <li><i class="fas fa-shield-alt"></i> Bundesliga</li>
-                    <li><i class="fas fa-star"></i> Champions League</li>
-                    <li><i class="fas fa-globe"></i> World Cup</li>
-                    <li><i class="fas fa-running"></i> Transfers</li>
-                    <li><i class="fas fa-users"></i> Team News</li>
-                </ul>
-                
-                <div class="subscription-status">
-                    <p><i class="fas fa-bell"></i> You're subscribed to 4 categories</p>
-                    <p>Get notified when admins post new content</p>
+                <!-- Live Scores -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">Live Scores</h3>
+                    <div class="match-list">
+                        <div class="match-item">
+                            <div class="match-teams">
+                                <div class="team">
+                                    <div class="team-logo">MCI</div>
+                                    <span class="team-name">Man City</span>
+                                </div>
+                                <div class="team">
+                                    <div class="team-logo">INT</div>
+                                    <span class="team-name">Inter Milan</span>
+                                </div>
+                            </div>
+                            <div class="match-score">1-0</div>
+                        </div>
+                        <div class="match-item">
+                            <div class="match-teams">
+                                <div class="team">
+                                    <div class="team-logo">DEN</div>
+                                    <span class="team-name">Nuggets</span>
+                                </div>
+                                <div class="team">
+                                    <div class="team-logo">MIA</div>
+                                    <span class="team-name">Heat</span>
+                                </div>
+                            </div>
+                            <div class="match-score">94-89</div>
+                        </div>
+                        <div class="match-item">
+                            <div class="match-teams">
+                                <div class="team">
+                                    <div class="team-logo">ENG</div>
+                                    <span class="team-name">England</span>
+                                </div>
+                                <div class="team">
+                                    <div class="team-logo">AUS</div>
+                                    <span class="team-name">Australia</span>
+                                </div>
+                            </div>
+                            <div class="match-score">278/4</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Posts Section -->
-            <div class="posts-section">
-                <div class="section-header">
-                    <h2>Latest Football News & Updates</h2>
-                    <button class="create-post-btn" id="createPostBtn" style="display: none;">
-                        <i class="fas fa-plus"></i> Create Post
-                    </button>
+
+                <!-- Top Players -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">Top Players</h3>
+                    <div class="top-players">
+                        <div class="player">
+                            <img src="https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1607&q=80" alt="Player">
+                            <div class="player-info">
+                                <h4>Erling Haaland</h4>
+                                <p>Manchester City • 52 Goals</p>
+                            </div>
+                        </div>
+                        <div class="player">
+                            <img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2090&q=80" alt="Player">
+                            <div class="player-info">
+                                <h4>Nikola Jokic</h4>
+                                <p>Denver Nuggets • MVP</p>
+                            </div>
+                        </div>
+                        <div class="player">
+                            <img src="https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Player">
+                            <div class="player-info">
+                                <h4>Novak Djokovic</h4>
+                                <p>Tennis • 23 Grand Slams</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="posts-container" id="postsContainer">
-                    <!-- Posts will be dynamically added here -->
+
+                <!-- Upcoming Events -->
+                <div class="sidebar-widget">
+                    <h3 class="widget-title">Upcoming Events</h3>
+                    <div class="match-list">
+                        <div class="match-item">
+                            <div class="match-teams">
+                                <div class="team">
+                                    <div class="team-logo">LIO</div>
+                                    <span class="team-name">Lions</span>
+                                </div>
+                                <div class="team">
+                                    <div class="team-logo">SHK</div>
+                                    <span class="team-name">Sharks</span>
+                                </div>
+                            </div>
+                            <div class="match-date">Tomorrow, 15:00</div>
+                        </div>
+                        <div class="match-item">
+                            <div class="match-teams">
+                                <div class="team">
+                                    <div class="team-logo">USA</div>
+                                    <span class="team-name">USA</span>
+                                </div>
+                                <div class="team">
+                                    <div class="team-logo">CAN</div>
+                                    <span class="team-name">Canada</span>
+                                </div>
+                            </div>
+                            <div class="match-date">Jun 25, 19:30</div>
+                        </div>
+                        <div class="match-item">
+                            <div class="match-teams">
+                                <div class="team">
+                                    <div class="team-logo">GSW</div>
+                                    <span class="team-name">Warriors</span>
+                                </div>
+                                <div class="team">
+                                    <div class="team-logo">LAL</div>
+                                    <span class="team-name">Lakers</span>
+                                </div>
+                            </div>
+                            <div class="match-date">Jun 28, 21:00</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Create Post Modal -->
-    <div class="modal" id="createPostModal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeModal">&times;</span>
-            <h2>Create New Post</h2>
-            <form id="postForm">
-                <div class="form-group">
-                    <label for="postTitle">Title</label>
-                    <input type="text" id="postTitle" class="form-control" placeholder="Enter post title" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="postCategory">Category</label>
-                    <select id="postCategory" class="form-control" required>
-                        <option value="">Select a category</option>
-                        <option value="Premier League">Premier League</option>
-                        <option value="La Liga">La Liga</option>
-                        <option value="Serie A">Serie A</option>
-                        <option value="Bundesliga">Bundesliga</option>
-                        <option value="Champions League">Champions League</option>
-                        <option value="World Cup">World Cup</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="postContent">Content</label>
-                    <textarea id="postContent" class="form-control" placeholder="Write your post content here..." required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="postImage">Image URL (Optional)</label>
-                    <input type="url" id="postImage" class="form-control" placeholder="https://example.com/image.jpg">
-                </div>
-                
-                <div class="form-group">
-                    <label for="postVideo">Video URL (Optional)</label>
-                    <input type="url" id="postVideo" class="form-control" placeholder="https://example.com/video.mp4">
-                </div>
-                
-                <button type="submit" class="submit-btn">Publish Post</button>
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="container">
+            <h2>Stay Updated With SportZone</h2>
+            <p>Subscribe to our newsletter and get the latest sports news delivered directly to your inbox.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email address">
+                <button type="submit">Subscribe</button>
             </form>
         </div>
-    </div>
-
-    <!-- Auth Modal -->
-    <div class="modal auth-modal" id="authModal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeAuthModal">&times;</span>
-            <h2>Join Sportera</h2>
-            
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="loginTab">Login</div>
-                <div class="auth-tab" id="registerTab">Register</div>
-            </div>
-            
-            <form id="loginForm" class="auth-form active">
-                <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
-                </div>
-                
-                <button type="submit" class="submit-btn">Login</button>
-                
-                <div style="text-align: center; margin-top: 15px;">
-                    <p>Admin? Use: suprememotive43@gmail.com</p>
-                </div>
-            </form>
-            
-            <form id="registerForm" class="auth-form">
-                <div class="form-group">
-                    <label for="registerName">Full Name</label>
-                    <input type="text" id="registerName" class="form-control" placeholder="Enter your full name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="registerEmail">Email</label>
-                    <input type="email" id="registerEmail" class="form-control" placeholder="Enter your email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="registerPassword">Password</label>
-                    <input type="password" id="registerPassword" class="form-control" placeholder="Create a password" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="registerConfirmPassword">Confirm Password</label>
-                    <input type="password" id="registerConfirmPassword" class="form-control" placeholder="Confirm your password" required>
-                </div>
-                
-                <button type="submit" class="submit-btn">Create Account</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Support Modal -->
-    <div class="modal" id="supportModal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeSupportModal">&times;</span>
-            <h2>Go Premium</h2>
-            <p>Upgrade to Premium to unlock all features including community creation and exclusive content.</p>
-            
-            <div class="form-group">
-                <label>Select Payment Method</label>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button class="submit-btn" style="width: auto;" id="cryptoBtn">Pay with Crypto (USDT BEP20)</button>
-                    <button class="submit-btn" style="width: auto; background: #1e6b30;" id="localBtn">Local Payment (Nigeria)</button>
-                </div>
-            </div>
-            
-            <div id="cryptoPayment" style="display: none; margin-top: 20px;">
-                <h3>Send USDT (BEP20) to this address:</h3>
-                <p style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; word-break: break-all;">
-                    0x742d35Cc6634C0532925a3b8D4a2a2a2a2a2a2a2a
-                </p>
-                <p>Amount: $19.99 USD</p>
-                <button class="submit-btn" id="confirmCrypto">I've Sent Payment</button>
-            </div>
-            
-            <div id="localPayment" style="display: none; margin-top: 20px;">
-                <h3>Local Payment Options (Nigeria)</h3>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="submit-btn" style="width: auto; background: #0a5c0a;">Pay with Bank Transfer</button>
-                    <button class="submit-btn" style="width: auto; background: #0a5c0a;">Pay with Card</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Music Player -->
-    <div class="music-player">
-        <div class="music-info">
-            <i class="fas fa-music"></i>
-            <span>Football Anthems</span>
-        </div>
-        <div class="music-controls">
-            <button class="music-btn" id="playBtn"><i class="fas fa-play"></i></button>
-            <button class="music-btn" id="muteBtn"><i class="fas fa-volume-up"></i></button>
-            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="50">
-        </div>
-    </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer>
         <div class="container">
-            <div class="footer-nav">
-                <a href="#" class="footer-btn">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                <a href="#" class="footer-btn" id="footerCommunity">
-                    <i class="fas fa-users"></i>
-                    <span>Community</span>
-                </a>
-                <a href="#" class="footer-btn" id="footerProfile">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="#" class="footer-btn" id="footerSupport">
-                    <i class="fas fa-headset"></i>
-                    <span>Support</span>
-                </a>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>SportZone</h3>
+                    <p>Your ultimate destination for all things sports. We bring you the latest news, scores, and analysis from around the world of sports.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Sports</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Football</a></li>
+                        <li><a href="#">Basketball</a></li>
+                        <li><a href="#">Tennis</a></li>
+                        <li><a href="#">Cricket</a></li>
+                        <li><a href="#">Golf</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Sports Avenue, NY 10001</li>
+                        <li><i class="fas fa-phone"></i> +1 234 567 8900</li>
+                        <li><i class="fas fa-envelope"></i> info@sportzone.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 SportZone. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Sample posts data
-        const samplePosts = [
-            {
-                id: 1,
-                title: "Manchester City Dominates Derby Match",
-                category: "Premier League",
-                content: "In a stunning display of football, Manchester City defeated their rivals with a 3-1 victory. Kevin De Bruyne was exceptional in midfield, creating two goals and controlling the tempo of the game.",
-                image: "https://images.unsplash.com/photo-1594736797933-d0ea3ff8db41?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                video: "",
-                author: "Admin User",
-                authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
-                date: "2023-11-15",
-                isAdmin: true,
-                likes: 24,
-                comments: 5,
-                liked: false,
-                saved: false
-            },
-            {
-                id: 2,
-                title: "Barcelona's Young Talent Shines in El Clásico",
-                category: "La Liga",
-                content: "Despite the loss, Barcelona's young squad showed tremendous promise against Real Madrid. The future looks bright with talents like Pedri and Gavi controlling the midfield.",
-                image: "https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-                video: "",
-                author: "Admin User",
-                authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
-                date: "2023-11-14",
-                isAdmin: true,
-                likes: 18,
-                comments: 3,
-                liked: false,
-                saved: false
-            },
-            {
-                id: 3,
-                title: "Mbappé Sets New Champions League Record",
-                category: "Champions League",
-                content: "Paris Saint-Germain's Kylian Mbappé became the youngest player to reach 40 Champions League goals with his brace against Bayern Munich.",
-                image: "",
-                video: "https://assets.mixkit.co/videos/preview/mixkit-football-player-dribbling-and-shooting-43375-large.mp4",
-                author: "Admin User",
-                authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
-                date: "2023-11-12",
-                isAdmin: true,
-                likes: 42,
-                comments: 8,
-                liked: false,
-                saved: false
-            }
-        ];
-
-        // Sample comments
-        const sampleComments = [
-            {
-                id: 1,
-                postId: 1,
-                author: "FootballFan99",
-                authorImg: "https://randomuser.me/api/portraits/men/32.jpg",
-                text: "Great analysis! De Bruyne was absolutely phenomenal.",
-                date: "2023-11-15"
-            },
-            {
-                id: 2,
-                postId: 1,
-                author: "SoccerExpert",
-                authorImg: "https://randomuser.me/api/portraits/women/44.jpg",
-                text: "City's midfield dominance was the key to this victory.",
-                date: "2023-11-15"
-            }
-        ];
-
-        // App State
-        let currentUser = null;
-        let isAdmin = false;
-        let savedPosts = [];
-        let notifications = [
-            {
-                title: "New Post in Premier League",
-                message: "Manchester City wins the derby! Check out the match analysis.",
-                time: "5 minutes ago",
-                unread: true
-            },
-            {
-                title: "Transfer News",
-                message: "Breaking: Mbappé makes decision on future club.",
-                time: "1 hour ago",
-                unread: true
-            },
-            {
-                title: "Champions League Update",
-                message: "Quarter-final draw results are out!",
-                time: "3 hours ago",
-                unread: false
-            }
-        ];
-
-        // DOM Elements
-        const postsContainer = document.getElementById('postsContainer');
-        const createPostBtn = document.getElementById('createPostBtn');
-        const adminCreatePostBtn = document.getElementById('adminCreatePostBtn');
-        const createPostModal = document.getElementById('createPostModal');
-        const closeModal = document.getElementById('closeModal');
-        const postForm = document.getElementById('postForm');
-        const notificationBell = document.getElementById('notificationBell');
-        const notificationsPanel = document.getElementById('notificationsPanel');
-        const userProfile = document.getElementById('userProfile');
-        const authModal = document.getElementById('authModal');
-        const closeAuthModal = document.getElementById('closeAuthModal');
-        const loginTab = document.getElementById('loginTab');
-        const registerTab = document.getElementById('registerTab');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const adminPanel = document.getElementById('adminPanel');
-        const profileLink = document.getElementById('profileLink');
-        const supportLink = document.getElementById('supportLink');
-        const supportModal = document.getElementById('supportModal');
-        const closeSupportModal = document.getElementById('closeSupportModal');
-        const cryptoBtn = document.getElementById('cryptoBtn');
-        const localBtn = document.getElementById('localBtn');
-        const cryptoPayment = document.getElementById('cryptoPayment');
-        const localPayment = document.getElementById('localPayment');
-        const playBtn = document.getElementById('playBtn');
-        const muteBtn = document.getElementById('muteBtn');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const backgroundMusic = document.getElementById('backgroundMusic');
-        const footerCommunity = document.getElementById('footerCommunity');
-        const footerProfile = document.getElementById('footerProfile');
-        const footerSupport = document.getElementById('footerSupport');
-
-        // Initialize the app
-        function initApp() {
-            renderPosts();
-            setupEventListeners();
-            checkAuthStatus();
-            playBackgroundMusic();
-        }
-
-        // Check if user is logged in
-        function checkAuthStatus() {
-            const savedUser = localStorage.getItem('sporteraUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                isAdmin = currentUser.email === 'suprememotive43@gmail.com';
-                updateUIForUser();
-            } else {
-                // Show auth modal if not logged in
-                setTimeout(() => {
-                    authModal.style.display = 'flex';
-                }, 1000);
-            }
-        }
-
-        // Update UI based on user status
-        function updateUIForUser() {
-            if (currentUser) {
-                userProfile.querySelector('span').textContent = currentUser.name;
-                if (isAdmin) {
-                    adminPanel.style.display = 'block';
-                    createPostBtn.style.display = 'flex';
-                    userProfile.innerHTML += ' <i class="fas fa-crown admin-badge"></i>';
+        // Simple JavaScript for interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.querySelector('.search-bar input');
+            const searchButton = document.querySelector('.search-bar button');
+            
+            searchButton.addEventListener('click', function() {
+                if (searchInput.value.trim() !== '') {
+                    alert(`Searching for: ${searchInput.value}`);
+                    // In a real application, this would trigger a search request
                 }
-            }
-        }
-
-        // Render posts to the DOM
-        function renderPosts() {
-            postsContainer.innerHTML = '';
-            
-            samplePosts.forEach(post => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post-card';
-                postElement.innerHTML = `
-                    <div class="post-header">
-                        <span class="post-category">${post.category}</span>
-                        <span class="post-date">${formatDate(post.date)}</span>
-                    </div>
-                    <h3 class="post-title">${post.title}</h3>
-                    <div class="post-content">${post.content}</div>
-                    ${post.image ? `<div class="post-media"><img src="${post.image}" alt="${post.title}"></div>` : ''}
-                    ${post.video ? `<div class="post-media"><video controls><source src="${post.video}" type="video/mp4">Your browser does not support the video tag.</video></div>` : ''}
-                    <div class="post-footer">
-                        <div class="post-actions">
-                            <div class="post-action ${post.liked ? 'active' : ''}" data-post-id="${post.id}" data-action="like">
-                                <i class="fas fa-heart"></i>
-                                <span>${post.likes}</span>
-                            </div>
-                            <div class="post-action" data-post-id="${post.id}" data-action="comment">
-                                <i class="fas fa-comment"></i>
-                                <span>${post.comments}</span>
-                            </div>
-                            <div class="post-action ${post.saved ? 'active' : ''}" data-post-id="${post.id}" data-action="save">
-                                <i class="fas fa-bookmark"></i>
-                                <span>Save</span>
-                            </div>
-                        </div>
-                        <div class="post-author">
-                            <img src="${post.authorImg}" alt="${post.author}">
-                            <span>${post.author} ${post.isAdmin ? '<i class="fas fa-crown admin-badge"></i>' : ''}</span>
-                        </div>
-                    </div>
-                    <div class="comments-section" id="comments-${post.id}" style="display: none;">
-                        <div class="comment-form">
-                            <input type="text" class="comment-input" placeholder="Write a comment...">
-                            <button class="comment-submit" data-post-id="${post.id}">Post</button>
-                        </div>
-                        <div class="comments-list" id="comments-list-${post.id}">
-                            <!-- Comments will be dynamically added here -->
-                        </div>
-                    </div>
-                `;
-                postsContainer.appendChild(postElement);
-                
-                // Render comments for this post
-                renderComments(post.id);
             });
             
-            // Add event listeners to post actions
-            document.querySelectorAll('.post-action').forEach(action => {
-                action.addEventListener('click', function() {
-                    const postId = parseInt(this.getAttribute('data-post-id'));
-                    const actionType = this.getAttribute('data-action');
-                    
-                    handlePostAction(postId, actionType, this);
-                });
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (searchInput.value.trim() !== '') {
+                        alert(`Searching for: ${searchInput.value}`);
+                        // In a real application, this would trigger a search request
+                    }
+                }
             });
             
-            // Add event listeners to comment buttons
-            document.querySelectorAll('.comment-submit').forEach(button => {
+            // Newsletter subscription
+            const newsletterForm = document.querySelector('.newsletter-form');
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const emailInput = this.querySelector('input[type="email"]');
+                if (emailInput.value.trim() !== '') {
+                    alert(`Thank you for subscribing with: ${emailInput.value}`);
+                    emailInput.value = '';
+                }
+            });
+            
+            // Video play buttons
+            const playButtons = document.querySelectorAll('.play-button');
+            playButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const postId = parseInt(this.getAttribute('data-post-id'));
-                    const commentInput = this.previousElementSibling;
-                    const commentText = commentInput.value.trim();
-                    
-                    if (commentText && currentUser) {
-                        addComment(postId, commentText);
-                        commentInput.value = '';
-                    } else if (!currentUser) {
-                        authModal.style.display = 'flex';
-                    }
+                    alert('Video would play in a real implementation');
                 });
             });
-        }
-
-        // Render comments for a post
-        function renderComments(postId) {
-            const commentsList = document.getElementById(`comments-list-${postId}`);
-            if (!commentsList) return;
             
-            commentsList.innerHTML = '';
-            
-            const postComments = sampleComments.filter(comment => comment.postId === postId);
-            
-            if (postComments.length === 0) {
-                commentsList.innerHTML = '<p style="text-align: center; color: var(--gray);">No comments yet. Be the first to comment!</p>';
-                return;
-            }
-            
-            postComments.forEach(comment => {
-                const commentElement = document.createElement('div');
-                commentElement.className = 'comment';
-                commentElement.innerHTML = `
-                    <img src="${comment.authorImg}" alt="${comment.author}" class="comment-avatar">
-                    <div class="comment-content">
-                        <div class="comment-author">
-                            ${comment.author}
-                        </div>
-                        <div class="comment-text">${comment.text}</div>
-                        <div class="comment-actions">
-                            <span class="comment-action">Like</span>
-                            <span class="comment-action">Reply</span>
-                            <span class="comment-time">${formatDate(comment.date)}</span>
-                        </div>
-                    </div>
-                `;
-                commentsList.appendChild(commentElement);
-            });
-        }
-
-        // Add a new comment
-        function addComment(postId, text) {
-            const newComment = {
-                id: sampleComments.length + 1,
-                postId: postId,
-                author: currentUser.name,
-                authorImg: currentUser.avatar || 'https://randomuser.me/api/portraits/men/32.jpg',
-                text: text,
-                date: new Date().toISOString().split('T')[0]
-            };
-            
-            sampleComments.push(newComment);
-            
-            // Update post comment count
-            const post = samplePosts.find(p => p.id === postId);
-            if (post) {
-                post.comments += 1;
-            }
-            
-            renderComments(postId);
-            renderPosts(); // Refresh to update comment count
-        }
-
-        // Handle post actions (like, comment, save)
-        function handlePostAction(postId, actionType, element) {
-            if (!currentUser) {
-                authModal.style.display = 'flex';
-                return;
-            }
-            
-            const post = samplePosts.find(p => p.id === postId);
-            if (!post) return;
-            
-            switch(actionType) {
-                case 'like':
-                    if (post.liked) {
-                        post.likes -= 1;
-                        post.liked = false;
-                        element.classList.remove('active');
-                    } else {
-                        post.likes += 1;
-                        post.liked = true;
-                        element.classList.add('active');
-                    }
-                    element.querySelector('span').textContent = post.likes;
-                    break;
-                    
-                case 'comment':
-                    const commentsSection = document.getElementById(`comments-${postId}`);
-                    if (commentsSection.style.display === 'none') {
-                        commentsSection.style.display = 'block';
-                    } else {
-                        commentsSection.style.display = 'none';
-                    }
-                    break;
-                    
-                case 'save':
-                    if (post.saved) {
-                        post.saved = false;
-                        element.classList.remove('active');
-                        // Remove from saved posts
-                        savedPosts = savedPosts.filter(id => id !== postId);
-                    } else {
-                        post.saved = true;
-                        element.classList.add('active');
-                        // Add to saved posts
-                        savedPosts.push(postId);
-                    }
-                    localStorage.setItem('sporteraSavedPosts', JSON.stringify(savedPosts));
-                    break;
-            }
-        }
-
-        // Format date for display
-        function formatDate(dateString) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString(undefined, options);
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Modal controls
-            createPostBtn.addEventListener('click', () => {
-                if (currentUser && isAdmin) {
-                    createPostModal.style.display = 'flex';
-                }
-            });
-            
-            adminCreatePostBtn.addEventListener('click', () => {
-                createPostModal.style.display = 'flex';
-            });
-            
-            closeModal.addEventListener('click', () => {
-                createPostModal.style.display = 'none';
-            });
-            
-            window.addEventListener('click', (e) => {
-                if (e.target === createPostModal) {
-                    createPostModal.style.display = 'none';
-                }
-                if (e.target === authModal) {
-                    authModal.style.display = 'none';
-                }
-                if (e.target === supportModal) {
-                    supportModal.style.display = 'none';
-                }
-            });
-            
-            // Form submission
-            postForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const title = document.getElementById('postTitle').value;
-                const category = document.getElementById('postCategory').value;
-                const content = document.getElementById('postContent').value;
-                const image = document.getElementById('postImage').value;
-                const video = document.getElementById('postVideo').value;
-                
-                // Create new post object
-                const newPost = {
-                    id: samplePosts.length + 1,
-                    title: title,
-                    category: category,
-                    content: content,
-                    image: image,
-                    video: video,
-                    author: "Admin User",
-                    authorImg: "https://randomuser.me/api/portraits/men/75.jpg",
-                    date: new Date().toISOString().split('T')[0],
-                    isAdmin: true,
-                    likes: 0,
-                    comments: 0,
-                    liked: false,
-                    saved: false
-                };
-                
-                // Add to beginning of posts array
-                samplePosts.unshift(newPost);
-                
-                // Re-render posts
-                renderPosts();
-                
-                // Close modal and reset form
-                createPostModal.style.display = 'none';
-                postForm.reset();
-                
-                // Show success message
-                showNotification('Post published successfully!');
-            });
-            
-            // Notification bell
-            notificationBell.addEventListener('click', () => {
-                notificationsPanel.style.display = notificationsPanel.style.display === 'block' ? 'none' : 'block';
-            });
-            
-            // Close notifications when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!notificationBell.contains(e.target) && !notificationsPanel.contains(e.target)) {
-                    notificationsPanel.style.display = 'none';
-                }
-            });
-            
-            // Auth modal tabs
-            loginTab.addEventListener('click', () => {
-                loginTab.classList.add('active');
-                registerTab.classList.remove('active');
-                loginForm.classList.add('active');
-                registerForm.classList.remove('active');
-            });
-            
-            registerTab.addEventListener('click', () => {
-                registerTab.classList.add('active');
-                loginTab.classList.remove('active');
-                registerForm.classList.add('active');
-                loginForm.classList.remove('active');
-            });
-            
-            // Auth forms
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                
-                // Simple validation
-                if (email && password) {
-                    // Check if admin login
-                    if (email === 'suprememotive43@gmail.com') {
-                        currentUser = {
-                            name: 'Admin User',
-                            email: email,
-                            avatar: 'https://randomuser.me/api/portraits/men/75.jpg'
-                        };
-                        isAdmin = true;
-                    } else {
-                        currentUser = {
-                            name: email.split('@')[0],
-                            email: email,
-                            avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-                        };
-                        isAdmin = false;
-                    }
-                    
-                    // Save user to localStorage
-                    localStorage.setItem('sporteraUser', JSON.stringify(currentUser));
-                    
-                    // Update UI
-                    updateUIForUser();
-                    
-                    // Close modal
-                    authModal.style.display = 'none';
-                    
-                    // Show welcome message
-                    showNotification(`Welcome to Sportera, ${currentUser.name}!`);
-                }
-            });
-            
-            registerForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const name = document.getElementById('registerName').value;
-                const email = document.getElementById('registerEmail').value;
-                const password = document.getElementById('registerPassword').value;
-                const confirmPassword = document.getElementById('registerConfirmPassword').value;
-                
-                // Simple validation
-                if (name && email && password && password === confirmPassword) {
-                    currentUser = {
-                        name: name,
-                        email: email,
-                        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-                    };
-                    isAdmin = false;
-                    
-                    // Save user to localStorage
-                    localStorage.setItem('sporteraUser', JSON.stringify(currentUser));
-                    
-                    // Update UI
-                    updateUIForUser();
-                    
-                    // Close modal
-                    authModal.style.display = 'none';
-                    
-                    // Show welcome message
-                    showNotification(`Welcome to Sportera, ${currentUser.name}!`);
-                } else if (password !== confirmPassword) {
-                    alert('Passwords do not match!');
-                }
-            });
-            
-            // User profile click
-            userProfile.addEventListener('click', () => {
-                if (currentUser) {
-                    // In a real app, this would open the user profile
-                    alert(`Profile page for ${currentUser.name} would open here.`);
-                } else {
-                    authModal.style.display = 'flex';
-                }
-            });
-            
-            // Profile link
-            profileLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (currentUser) {
-                    // In a real app, this would open the user profile
-                    alert(`Profile page for ${currentUser.name} would open here.`);
-                } else {
-                    authModal.style.display = 'flex';
-                }
-            });
-            
-            // Support link
-            supportLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                supportModal.style.display = 'flex';
-            });
-            
-            closeSupportModal.addEventListener('click', () => {
-                supportModal.style.display = 'none';
-            });
-            
-            // Payment methods
-            cryptoBtn.addEventListener('click', () => {
-                cryptoPayment.style.display = 'block';
-                localPayment.style.display = 'none';
-            });
-            
-            localBtn.addEventListener('click', () => {
-                localPayment.style.display = 'block';
-                cryptoPayment.style.display = 'none';
-            });
-            
-            // Music controls
-            playBtn.addEventListener('click', toggleMusic);
-            
-            muteBtn.addEventListener('click', toggleMute);
-            
-            volumeSlider.addEventListener('input', () => {
-                backgroundMusic.volume = volumeSlider.value / 100;
-            });
-            
-            // Footer buttons
-            footerCommunity.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (currentUser) {
-                    // In a real app, this would navigate to community page
-                    alert('Community page would open here. This feature is for premium users only.');
-                } else {
-                    authModal.style.display = 'flex';
-                }
-            });
-            
-            footerProfile.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (currentUser) {
-                    // In a real app, this would open the user profile
-                    alert(`Profile page for ${currentUser.name} would open here.`);
-                } else {
-                    authModal.style.display = 'flex';
-                }
-            });
-            
-            footerSupport.addEventListener('click', (e) => {
-                e.preventDefault();
-                supportModal.style.display = 'flex';
-            });
-            
-            // Category selection
-            document.querySelectorAll('.categories li').forEach(item => {
-                item.addEventListener('click', function() {
-                    document.querySelectorAll('.categories li').forEach(li => {
-                        li.classList.remove('active');
-                    });
+            // Navigation active state
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
-                    
-                    // In a real app, you would filter posts by category here
-                    showNotification(`Showing posts from ${this.textContent}`);
                 });
             });
-        }
-
-        // Background music controls
-        function playBackgroundMusic() {
-            backgroundMusic.volume = 0.3;
-            // In a real app, you would play actual football anthems
-            // For demo purposes, we're using a crowd cheer sound
-        }
-        
-        function toggleMusic() {
-            if (backgroundMusic.paused) {
-                backgroundMusic.play();
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                backgroundMusic.pause();
-                playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        }
-        
-        function toggleMute() {
-            if (backgroundMusic.muted) {
-                backgroundMusic.muted = false;
-                muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-            } else {
-                backgroundMusic.muted = true;
-                muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            }
-        }
-
-        // Show notification
-        function showNotification(message) {
-            // Create a temporary notification element
-            const notification = document.createElement('div');
-            notification.className = 'notification-item unread';
-            notification.innerHTML = `
-                <div class="notification-title">System Notification</div>
-                <div class="notification-message">${message}</div>
-                <div class="notification-time">Just now</div>
-            `;
-            
-            const notificationsList = document.querySelector('.notifications-list');
-            notificationsList.insertBefore(notification, notificationsList.firstChild);
-            
-            // Update notification count
-            const notificationCount = document.querySelector('.notification-count');
-            notificationCount.textContent = parseInt(notificationCount.textContent) + 1;
-            
-            // Remove after 3 seconds
-            setTimeout(() => {
-                notification.remove();
-                notificationCount.textContent = parseInt(notificationCount.textContent) - 1;
-            }, 3000);
-        }
-
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initApp);
+        });
     </script>
 </body>
 </html>
