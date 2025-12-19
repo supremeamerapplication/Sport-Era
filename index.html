@@ -3,1207 +3,882 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sport Era - Sports News Community</title>
+    <title>Sport Era | Professional Arena</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap');
+        
         :root {
-            --primary: #1e3a8a;
-            --secondary: #dc2626;
-            --light: #f8fafc;
-            --dark: #0f172a;
-            --gray: #64748b;
-            --light-gray: #e2e8f0;
+            --accent: #f43f5e;
+            --accent-hover: #e11d48;
+            --bg-deep: #020617;
+            --card-bg: #0f172a;
+            --success: #10b981;
+            --warning: #f59e0b;
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: var(--bg-deep); 
+            color: #f1f5f9;
+            overflow-x: hidden;
         }
-        
-        body {
-            background-color: #f1f5f9;
-            color: var(--dark);
-            line-height: 1.6;
+
+        .glass-nav {
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+
+        .sport-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 2rem;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, border-color;
         }
-        
-        /* Header Styles */
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 15px 0;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+
+        .sport-card:hover {
+            border-color: rgba(244, 63, 94, 0.4);
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
-        
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo h1 {
-            font-size: 28px;
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 800;
+            letter-spacing: 0.05em;
         }
-        
-        .logo i {
-            color: var(--secondary);
-            font-size: 32px;
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4);
         }
-        
-        .nav-links {
-            display: flex;
-            gap: 25px;
+
+        .btn-action:active {
+            transform: translateY(0);
         }
-        
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            transition: color 0.3s;
+
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, var(--accent), var(--accent-hover)); 
+            border-radius: 10px; 
         }
-        
-        .nav-links a:hover {
-            color: #fbbf24;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--primary);
-            cursor: pointer;
-        }
-        
-        /* Main Content */
-        main {
-            padding: 30px 0;
-        }
-        
-        .main-container {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-        }
-        
-        /* News Feed */
-        .news-feed {
-            background-color: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .section-title {
-            font-size: 24px;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid var(--primary);
-            color: var(--dark);
-        }
-        
-        /* Post Creation (Admin Only) */
-        .post-creation {
-            background-color: var(--light);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-            display: none;
-        }
-        
-        .admin-show {
-            display: block;
-        }
-        
-        .post-creation h3 {
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-        
-        .post-form input,
-        .post-form textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid var(--light-gray);
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        .post-form textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        .post-form button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .post-form button:hover {
-            background-color: #1e40af;
-        }
-        
-        /* Posts */
-        .post {
-            background-color: white;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid var(--secondary);
-        }
-        
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .post-author {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .author-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .author-info h4 {
-            font-size: 18px;
-        }
-        
-        .post-date {
-            color: var(--gray);
-            font-size: 14px;
-        }
-        
-        .post-category {
-            background-color: var(--light-gray);
-            color: var(--dark);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .post-title {
-            font-size: 22px;
-            margin-bottom: 15px;
-            color: var(--dark);
-        }
-        
-        .post-content {
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-        
-        .post-image {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .post-stats {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .post-stat {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--gray);
-            cursor: pointer;
-        }
-        
-        .post-stat.active {
-            color: var(--secondary);
-        }
-        
-        /* Comments */
-        .comments-section {
-            margin-top: 25px;
-        }
-        
-        .comment-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .comment-input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--light-gray);
-            border-radius: 5px;
-        }
-        
-        .comment-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        .comment {
-            background-color: var(--light);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        
-        .comment-author {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .comment-author-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background-color: var(--gray);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        .reply-btn {
-            background: none;
-            border: none;
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .replies {
-            margin-left: 30px;
-            margin-top: 15px;
-        }
-        
-        /* Sidebar */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-        
-        .widget {
-            background-color: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .widget-title {
-            font-size: 20px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--light-gray);
-            color: var(--dark);
-        }
-        
-        .users-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .user-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-        }
-        
-        .user-item:hover {
-            background-color: var(--light);
-        }
-        
-        .user-item-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .category-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .category {
-            background-color: var(--light);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
+
+        input, textarea {
+            background: rgba(30, 41, 59, 0.7) !important;
+            border: 1px solid rgba(51, 65, 85, 0.5) !important;
+            color: white !important;
+            outline: none;
             transition: all 0.3s;
         }
-        
-        .category:hover {
-            background-color: var(--primary);
-            color: white;
+
+        input:focus, textarea:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15);
+            background: rgba(30, 41, 59, 0.9) !important;
         }
-        
-        /* Footer */
-        footer {
-            background-color: var(--dark);
-            color: white;
-            padding: 40px 0;
-            margin-top: 50px;
+
+        .shimmer {
+            background: linear-gradient(
+                90deg,
+                rgba(15, 23, 42, 0.4) 25%,
+                rgba(30, 41, 59, 0.8) 50%,
+                rgba(15, 23, 42, 0.4) 75%
+            );
+            background-size: 200% 100%;
+            animation: loading 2s infinite;
         }
-        
-        .footer-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
-        
-        .footer-section h3 {
-            margin-bottom: 20px;
-            font-size: 20px;
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        
-        .footer-section p {
-            color: #cbd5e1;
-            margin-bottom: 20px;
+
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
-        
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
+
+        .animate-slide-in {
+            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
-        
-        .social-icons a {
-            color: white;
-            font-size: 20px;
-            transition: color 0.3s;
+
+        .pulse-subtle {
+            animation: pulse-subtle 2s infinite;
         }
-        
-        .social-icons a:hover {
-            color: #fbbf24;
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 30px;
-            margin-top: 30px;
-            border-top: 1px solid #334155;
-            color: #94a3b8;
-        }
-        
-        /* Modal for Profile */
-        .modal {
-            display: none;
+
+        .notification {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal-content {
-            background-color: white;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 600px;
-            padding: 30px;
-            position: relative;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 20px;
+            top: 100px;
             right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--gray);
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 350px;
         }
-        
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
+
+        .notification.show {
+            transform: translateX(0);
         }
-        
-        .profile-avatar-large {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-color: var(--primary);
-            color: white;
+
+        .image-placeholder {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 36px;
+            color: rgba(255, 255, 255, 0.3);
         }
-        
-        /* Responsive */
-        @media (max-width: 992px) {
-            .main-container {
-                grid-template-columns: 1fr;
+
+        .like-animation {
+            animation: likePop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes likePop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+            .sport-card {
+                border-radius: 1.5rem;
             }
-            
-            .footer-container {
-                grid-template-columns: 1fr;
-                gap: 40px;
+            .glass-nav {
+                backdrop-filter: blur(10px);
             }
         }
-        
-        @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            .nav-links {
-                gap: 15px;
-                flex-wrap: wrap;
-                justify-content: center;
+
+        /* Dark mode enhancements */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --card-bg: rgba(15, 23, 42, 0.8);
             }
         }
     </style>
 </head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <i class="fas fa-futbol"></i>
-                <h1>Sport Era</h1>
+<body class="custom-scrollbar">
+    <!-- Notification System -->
+    <div id="notification" class="notification hidden">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-rose-600/20 flex items-center justify-center">
+                <i class="fas fa-bell text-rose-500"></i>
             </div>
-            
-            <nav class="nav-links">
-                <a href="#" class="active">Home</a>
-                <a href="#">News</a>
-                <a href="#">Football</a>
-                <a href="#">Basketball</a>
-                <a href="#">Tennis</a>
-                <a href="#">More</a>
-            </nav>
-            
-            <div class="user-info">
-                <div class="user-avatar" id="currentUserAvatar">JD</div>
-                <span id="currentUserName">John Doe</span>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container">
-        <div class="main-container">
-            <!-- News Feed Section -->
-            <div class="news-feed">
-                <h2 class="section-title">Latest Sports News</h2>
-                
-                <!-- Admin Post Creation (Visible only to admin) -->
-                <div class="post-creation" id="adminPostSection">
-                    <h3>Create New Post</h3>
-                    <form class="post-form" id="postForm">
-                        <input type="text" id="postTitle" placeholder="Post Title" required>
-                        <textarea id="postContent" placeholder="Write your news article here..." required></textarea>
-                        <input type="text" id="postImage" placeholder="Image URL (optional)">
-                        <select id="postCategory">
-                            <option value="Football">Football</option>
-                            <option value="Basketball">Basketball</option>
-                            <option value="Tennis">Tennis</option>
-                            <option value="Cricket">Cricket</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        <button type="submit">Publish Post</button>
-                    </form>
-                </div>
-                
-                <!-- Posts will be dynamically added here -->
-                <div id="postsContainer">
-                    <!-- Posts will be loaded here by JavaScript -->
-                </div>
-            </div>
-            
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Active Users Widget -->
-                <div class="widget">
-                    <h3 class="widget-title">Active Users</h3>
-                    <div class="users-list" id="activeUsers">
-                        <!-- Users will be dynamically added here -->
-                    </div>
-                </div>
-                
-                <!-- Categories Widget -->
-                <div class="widget">
-                    <h3 class="widget-title">Categories</h3>
-                    <div class="category-list">
-                        <div class="category">Football</div>
-                        <div class="category">Basketball</div>
-                        <div class="category">Tennis</div>
-                        <div class="category">Cricket</div>
-                        <div class="category">Rugby</div>
-                        <div class="category">Baseball</div>
-                        <div class="category">Formula 1</div>
-                        <div class="category">Golf</div>
-                    </div>
-                </div>
-                
-                <!-- Admin Controls Widget -->
-                <div class="widget">
-                    <h3 class="widget-title">Admin Controls</h3>
-                    <div class="admin-controls">
-                        <button id="toggleAdminBtn" class="post-form button" style="width:100%; margin-bottom:10px;">Toggle Admin Mode</button>
-                        <p id="adminStatus">You are currently viewing as a regular user.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container footer-container">
-            <div class="footer-section">
-                <h3>Sport Era</h3>
-                <p>Your go-to platform for the latest sports news, discussions, and community interactions. Join the conversation today!</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <p><a href="#" style="color:#cbd5e1; text-decoration:none;">Home</a></p>
-                <p><a href="#" style="color:#cbd5e1; text-decoration:none;">Latest News</a></p>
-                <p><a href="#" style="color:#cbd5e1; text-decoration:none;">Top Stories</a></p>
-                <p><a href="#" style="color:#cbd5e1; text-decoration:none;">Community Guidelines</a></p>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p><i class="fas fa-envelope"></i> contact@sportera.com</p>
-                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
-                <p><i class="fas fa-map-marker-alt"></i> 123 Sports Ave, City, Country</p>
-            </div>
-        </div>
-        
-        <div class="copyright container">
-            <p>&copy; 2023 Sport Era. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- User Profile Modal -->
-    <div class="modal" id="profileModal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div class="profile-header">
-                <div class="profile-avatar-large" id="modalAvatar">JD</div>
-                <div>
-                    <h2 id="modalUserName">John Doe</h2>
-                    <p id="modalUserRole">Regular User</p>
-                    <p id="modalUserJoinDate">Member since: January 2023</p>
-                </div>
-            </div>
-            <div class="profile-details">
-                <h3>User Activity</h3>
-                <p>Posts: <span id="modalUserPosts">2</span></p>
-                <p>Comments: <span id="modalUserComments">12</span></p>
-                <p>Likes Received: <span id="modalUserLikes">45</span></p>
+            <div>
+                <p class="text-sm font-semibold" id="notification-title"></p>
+                <p class="text-xs text-slate-400" id="notification-message"></p>
             </div>
         </div>
     </div>
 
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[999] flex items-center justify-center hidden">
+        <div class="text-center">
+            <div class="w-20 h-20 border-4 border-slate-800 border-t-rose-600 rounded-full animate-spin mb-4"></div>
+            <p class="text-slate-400 font-semibold tracking-widest text-sm">LOADING ARENA</p>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-xl">
+        <div class="bg-slate-900/90 w-full max-w-md p-8 rounded-[2.5rem] border border-white/10 shadow-2xl relative animate-slide-in">
+            <button id="close-auth" class="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+            
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-rose-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-500 pulse-subtle">
+                    <i class="fas fa-trophy text-3xl"></i>
+                </div>
+                <h2 id="auth-title" class="text-3xl font-900 italic uppercase">Join the <span class="text-rose-600">Era</span></h2>
+                <p id="auth-subtitle" class="text-slate-400 text-sm mt-2">Sign up to react and comment on feeds.</p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Email Address</label>
+                    <input type="email" id="email" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30" placeholder="athlete@sportera.com">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30" placeholder="••••••••" minlength="6">
+                </div>
+                <div id="auth-error" class="text-rose-400 text-xs hidden text-center"></div>
+                <button id="auth-action-btn" class="w-full py-4 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm mt-4">
+                    Create Account
+                </button>
+                <button id="toggle-auth-mode" class="w-full text-center text-xs text-slate-500 hover:text-rose-500 transition-colors">
+                    Already have an account? Sign In
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav animate-slide-in">
+        <div class="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-rose-600 to-pink-600 flex items-center justify-center rounded-xl rotate-3 shadow-lg shadow-rose-900/40">
+                    <i class="fas fa-bolt text-white text-xl -rotate-3"></i>
+                </div>
+                <span class="text-2xl font-900 tracking-tighter uppercase italic">Sport<span class="text-rose-600">Era</span></span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button id="admin-toggle" class="hidden w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-600/10 hover:border-rose-600/30 transition-all duration-300">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <div id="user-profile" class="hidden items-center gap-3">
+                    <div class="flex flex-col items-end hidden sm:flex">
+                        <span id="display-email" class="text-xs font-bold text-slate-200 truncate max-w-[120px]"></span>
+                        <span class="text-[10px] text-rose-500 font-bold uppercase tracking-widest">Pro Athlete</span>
+                    </div>
+                    <button id="logout-btn" class="w-10 h-10 bg-slate-800 hover:bg-rose-600 rounded-xl flex items-center justify-center transition-all duration-300 group">
+                        <i class="fas fa-sign-out-alt group-hover:rotate-90 transition-transform"></i>
+                    </button>
+                </div>
+                <button id="login-trigger" class="px-6 py-2.5 btn-action rounded-xl text-sm font-bold uppercase tracking-tighter">
+                    Enter Arena
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-28 pb-20 max-w-2xl mx-auto px-4">
+        
+        <!-- Broadcast Composer -->
+        <section id="composer" class="hidden mb-12 animate-in fade-in slide-in-from-top-4 duration-300">
+            <div class="bg-gradient-to-br from-slate-900/50 to-slate-900/30 p-6 rounded-[2.5rem] border-2 border-dashed border-rose-600/30 backdrop-blur-sm">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-broadcast-tower text-rose-500"></i> Broadcast News
+                </h3>
+                <div class="space-y-4">
+                    <input type="text" id="post-title" placeholder="Catchy Headline..." class="w-full px-4 py-3 rounded-2xl focus:ring-2 focus:ring-rose-500/30">
+                    <textarea id="post-content" placeholder="Full story details..." rows="3" class="w-full px-4 py-3 rounded-2xl resize-none focus:ring-2 focus:ring-rose-500/30"></textarea>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="post-tag" placeholder="Sport (e.g. NBA)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30">
+                        <input type="text" id="post-image" placeholder="Image URL (optional)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30">
+                    </div>
+                    <div class="flex gap-4">
+                        <button id="cancel-post" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-2xl font-bold transition-colors">
+                            Cancel
+                        </button>
+                        <button id="publish-btn" class="flex-1 py-3 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm">
+                            Publish Live
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feed List -->
+        <div id="feed" class="space-y-8">
+            <!-- Skeletons -->
+            <div class="shimmer h-64 w-full rounded-[2.5rem]"></div>
+            <div class="shimmer h-64 w-full rounded-[2.5rem]"></div>
+        </div>
+
+        <!-- No Posts Message -->
+        <div id="no-posts" class="hidden text-center py-20 opacity-20">
+            <i class="fas fa-flag-checkered text-5xl mb-4"></i>
+            <p class="font-bold tracking-[0.3em] text-slate-400">ARENA IS EMPTY</p>
+            <p class="text-sm text-slate-600 mt-2">Be the first to post something!</p>
+        </div>
+    </main>
+
+    <!-- Post Template -->
+    <template id="post-tpl">
+        <article class="sport-card fade-in">
+            <div class="p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-rose-600/10 flex items-center justify-center text-rose-500 text-xs">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-200">SportEra Editor <i class="fas fa-check-circle text-blue-400 ml-1"></i></span>
+                            <span class="post-time text-[10px] text-slate-500 uppercase font-bold tracking-widest"></span>
+                        </div>
+                    </div>
+                    <span class="post-tag text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 bg-rose-600/10 text-rose-500 rounded-md border border-rose-600/20"></span>
+                </div>
+                
+                <h2 class="post-title text-2xl font-800 tracking-tight leading-tight mb-4 italic"></h2>
+                <p class="post-content text-slate-400 text-sm leading-relaxed mb-6"></p>
+                
+                <div class="post-img-container hidden rounded-[1.5rem] overflow-hidden border border-white/5 mb-6 bg-slate-900">
+                    <img src="" class="post-img w-full h-auto object-cover max-h-96 transition-opacity duration-300 opacity-0" 
+                         onload="this.classList.remove('opacity-0'); this.classList.add('opacity-100')"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"400\" height=\"200\" viewBox=\"0 0 400 200\"><rect width=\"400\" height=\"200\" fill=\"%231e293b\"/><text x=\"200\" y=\"100\" font-family=\"Arial\" font-size=\"14\" fill=\"%234a5568\" text-anchor=\"middle\">Image not available</text></svg>'; this.classList.remove('opacity-0'); this.classList.add('opacity-100')"
+                         alt="news image">
+                </div>
+
+                <div class="flex items-center gap-8 pt-2 border-t border-white/5">
+                    <button class="like-btn flex items-center gap-2 text-slate-400 hover:text-rose-500 transition-colors font-bold group">
+                        <i class="far fa-heart text-xl group-hover:scale-110 transition-transform"></i>
+                        <span class="like-count text-xs">0</span>
+                    </button>
+                    <button class="comment-toggle flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors font-bold group">
+                        <i class="far fa-comment text-xl group-hover:scale-110 transition-transform"></i>
+                        <span class="comment-count text-xs">0</span>
+                    </button>
+                    <button class="share-btn flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors font-bold group ml-auto">
+                        <i class="fas fa-share-alt text-lg group-hover:scale-110 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Comment Section -->
+            <div class="comment-drawer hidden bg-black/30 border-t border-white/5 p-8">
+                <div class="comment-list space-y-4 mb-6 max-h-60 overflow-y-auto custom-scrollbar pr-2"></div>
+                <div class="relative">
+                    <input type="text" placeholder="Write a comment..." class="comment-input w-full px-5 py-3 rounded-2xl pr-14 text-sm focus:ring-2 focus:ring-rose-500/30">
+                    <button class="comment-submit absolute right-2 top-2 w-9 h-9 btn-action rounded-xl flex items-center justify-center hover:scale-105 transition-transform">
+                        <i class="fas fa-paper-plane text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </template>
+
     <script>
-        // App State
-        const state = {
-            isAdmin: false,
-            currentUser: {
-                id: 1,
-                name: "John Doe",
-                role: "user",
-                avatar: "JD",
-                joinDate: "January 2023"
-            },
-            posts: [
-                {
-                    id: 1,
-                    title: "Manchester United Wins Premier League After Dramatic Final Day",
-                    content: "In a thrilling conclusion to the Premier League season, Manchester United secured their 21st title with a 3-2 victory over rivals Manchester City. The match saw a last-minute winner from striker Marcus Rashford, completing a remarkable comeback after being 2-0 down at halftime.",
-                    authorId: 2,
-                    authorName: "Sarah Johnson",
-                    authorAvatar: "SJ",
-                    date: "2023-05-28",
-                    category: "Football",
-                    image: "https://images.unsplash.com/photo-1594736797933-d0101cc4a0e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-                    likes: 142,
-                    comments: 28
-                },
-                {
-                    id: 2,
-                    title: "NBA Finals: Lakers Take Game 7 in Overtime Thriller",
-                    content: "The Los Angeles Lakers claimed their 18th NBA championship after a nail-biting Game 7 overtime victory against the Boston Celtics. LeBron James delivered a historic performance with a triple-double, securing his 5th Finals MVP award in the process.",
-                    authorId: 3,
-                    authorName: "Mike Chen",
-                    authorAvatar: "MC",
-                    date: "2023-06-12",
-                    category: "Basketball",
-                    image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-                    likes: 98,
-                    comments: 19
-                },
-                {
-                    id: 3,
-                    title: "Djokovic Wins Record 24th Grand Slam at Wimbledon",
-                    content: "Novak Djokovic made tennis history by winning his 24th Grand Slam title at Wimbledon, defeating Carlos Alcaraz in a five-set marathon that lasted nearly five hours. The victory solidifies Djokovic's position as one of the greatest tennis players of all time.",
-                    authorId: 4,
-                    authorName: "Emma Wilson",
-                    authorAvatar: "EW",
-                    date: "2023-07-09",
-                    category: "Tennis",
-                    image: "https://images.unsplash.com/photo-1595435934247-5d33b7f92c70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-                    likes: 76,
-                    comments: 15
-                }
-            ],
-            users: [
-                { id: 1, name: "John Doe", role: "user", avatar: "JD", joinDate: "January 2023" },
-                { id: 2, name: "Sarah Johnson", role: "admin", avatar: "SJ", joinDate: "March 2022" },
-                { id: 3, name: "Mike Chen", role: "user", avatar: "MC", joinDate: "August 2022" },
-                { id: 4, name: "Emma Wilson", role: "user", avatar: "EW", joinDate: "November 2022" },
-                { id: 5, name: "Alex Rodriguez", role: "user", avatar: "AR", joinDate: "February 2023" },
-                { id: 6, name: "Lisa Thompson", role: "user", avatar: "LT", joinDate: "April 2023" }
-            ],
-            comments: [
-                {
-                    id: 1,
-                    postId: 1,
-                    authorId: 3,
-                    authorName: "Mike Chen",
-                    authorAvatar: "MC",
-                    content: "What an incredible match! Rashford's winner was absolutely sensational.",
-                    date: "2023-05-28",
-                    replies: [
-                        {
-                            id: 11,
-                            authorId: 2,
-                            authorName: "Sarah Johnson",
-                            authorAvatar: "SJ",
-                            content: "I couldn't believe it when he scored! Best final day ever!",
-                            date: "2023-05-28"
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    postId: 1,
-                    authorId: 5,
-                    authorName: "Alex Rodriguez",
-                    authorAvatar: "AR",
-                    content: "City really bottled it in the second half. Pep has some explaining to do.",
-                    date: "2023-05-29",
-                    replies: []
-                },
-                {
-                    id: 3,
-                    postId: 2,
-                    authorId: 4,
-                    authorName: "Emma Wilson",
-                    authorAvatar: "EW",
-                    content: "LeBron is simply unstoppable. GOAT conversation continues!",
-                    date: "2023-06-13",
-                    replies: [
-                        {
-                            id: 31,
-                            authorId: 1,
-                            authorName: "John Doe",
-                            authorAvatar: "JD",
-                            content: "Absolutely! At 38 years old, he's still dominating the league.",
-                            date: "2023-06-13"
-                        }
-                    ]
-                }
-            ]
+        // --- 1. CONFIGURATION ---
+        const SUPABASE_URL = ''; 
+        const SUPABASE_ANON_KEY = '';
+
+        // --- 2. INITIALIZATION ---
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- 3. STATE MANAGEMENT ---
+        let user = null;
+        let isLoginMode = false;
+        let isLoading = false;
+        let posts = [];
+        let currentPage = 1;
+        const postsPerPage = 10;
+
+        // --- 4. DOM CACHE ---
+        const dom = {
+            notification: document.getElementById('notification'),
+            notificationTitle: document.getElementById('notification-title'),
+            notificationMessage: document.getElementById('notification-message'),
+            loadingOverlay: document.getElementById('loading-overlay'),
+            authModal: document.getElementById('auth-modal'),
+            authTitle: document.getElementById('auth-title'),
+            authSubtitle: document.getElementById('auth-subtitle'),
+            authBtn: document.getElementById('auth-action-btn'),
+            authToggle: document.getElementById('toggle-auth-mode'),
+            authError: document.getElementById('auth-error'),
+            loginTrigger: document.getElementById('login-trigger'),
+            userProfile: document.getElementById('user-profile'),
+            displayEmail: document.getElementById('display-email'),
+            logoutBtn: document.getElementById('logout-btn'),
+            adminToggle: document.getElementById('admin-toggle'),
+            composer: document.getElementById('composer'),
+            feed: document.getElementById('feed'),
+            noPosts: document.getElementById('no-posts'),
+            publishBtn: document.getElementById('publish-btn'),
+            cancelPost: document.getElementById('cancel-post'),
+            inputs: {
+                email: document.getElementById('email'),
+                password: document.getElementById('password'),
+                postTitle: document.getElementById('post-title'),
+                postContent: document.getElementById('post-content'),
+                postTag: document.getElementById('post-tag'),
+                postImage: document.getElementById('post-image')
+            }
         };
 
-        // DOM Elements
-        const adminPostSection = document.getElementById('adminPostSection');
-        const postsContainer = document.getElementById('postsContainer');
-        const activeUsers = document.getElementById('activeUsers');
-        const toggleAdminBtn = document.getElementById('toggleAdminBtn');
-        const adminStatus = document.getElementById('adminStatus');
-        const postForm = document.getElementById('postForm');
-        const currentUserAvatar = document.getElementById('currentUserAvatar');
-        const currentUserName = document.getElementById('currentUserName');
-        const profileModal = document.getElementById('profileModal');
-        const closeModal = document.querySelector('.close-modal');
-        const modalAvatar = document.getElementById('modalAvatar');
-        const modalUserName = document.getElementById('modalUserName');
-        const modalUserRole = document.getElementById('modalUserRole');
-        const modalUserJoinDate = document.getElementById('modalUserJoinDate');
-        const modalUserPosts = document.getElementById('modalUserPosts');
-        const modalUserComments = document.getElementById('modalUserComments');
-        const modalUserLikes = document.getElementById('modalUserLikes');
-
-        // Initialize the app
-        function init() {
-            renderPosts();
-            renderActiveUsers();
-            setupEventListeners();
-            updateUI();
-        }
-
-        // Set up event listeners
-        function setupEventListeners() {
-            // Toggle admin mode
-            toggleAdminBtn.addEventListener('click', toggleAdminMode);
+        // --- 5. UTILITY FUNCTIONS ---
+        function showNotification(title, message, type = 'info') {
+            dom.notificationTitle.textContent = title;
+            dom.notificationMessage.textContent = message;
             
-            // Handle new post submission
-            postForm.addEventListener('submit', handlePostSubmit);
+            const icon = dom.notification.querySelector('i');
+            const iconBg = dom.notification.querySelector('div > div');
             
-            // Close modal when X is clicked
-            closeModal.addEventListener('click', () => {
-                profileModal.style.display = 'none';
-            });
-            
-            // Close modal when clicking outside
-            window.addEventListener('click', (e) => {
-                if (e.target === profileModal) {
-                    profileModal.style.display = 'none';
-                }
-            });
-            
-            // Open profile modal when clicking on user avatar
-            currentUserAvatar.addEventListener('click', () => {
-                openUserProfile(state.currentUser);
-            });
-        }
-
-        // Toggle admin mode
-        function toggleAdminMode() {
-            state.isAdmin = !state.isAdmin;
-            
-            if (state.isAdmin) {
-                state.currentUser.role = 'admin';
-                adminStatus.textContent = "You are currently in ADMIN mode. You can create new posts.";
-            } else {
-                state.currentUser.role = 'user';
-                adminStatus.textContent = "You are currently viewing as a regular user.";
+            if (type === 'success') {
+                icon.className = 'fas fa-check text-emerald-500';
+                iconBg.className = 'w-8 h-8 rounded-lg bg-emerald-600/20 flex items-center justify-center';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle text-rose-500';
+                iconBg.className = 'w-8 h-8 rounded-lg bg-rose-600/20 flex items-center justify-center';
             }
             
-            updateUI();
+            dom.notification.classList.remove('hidden');
+            setTimeout(() => dom.notification.classList.add('show'), 10);
+            
+            setTimeout(() => {
+                dom.notification.classList.remove('show');
+                setTimeout(() => dom.notification.classList.add('hidden'), 400);
+            }, 5000);
         }
 
-        // Update UI based on current state
+        function setLoading(state) {
+            isLoading = state;
+            if (state) {
+                dom.loadingOverlay.classList.remove('hidden');
+            } else {
+                dom.loadingOverlay.classList.add('hidden');
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function formatTime(date) {
+            const now = new Date();
+            const diffMs = now - new Date(date);
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return new Date(date).toLocaleDateString();
+        }
+
+        // --- 6. AUTH FUNCTIONS ---
+        async function checkUser() {
+            setLoading(true);
+            const { data: { user: activeUser }, error } = await supabase.auth.getUser();
+            
+            if (!error) {
+                user = activeUser;
+                updateUI();
+            }
+            
+            setLoading(false);
+        }
+
         function updateUI() {
-            // Show/hide admin post creation section
-            if (state.isAdmin) {
-                adminPostSection.classList.add('admin-show');
-                toggleAdminBtn.textContent = "Switch to User Mode";
+            if (user) {
+                dom.loginTrigger.classList.add('hidden');
+                dom.userProfile.classList.remove('hidden');
+                dom.adminToggle.classList.remove('hidden');
+                dom.displayEmail.textContent = user.email.split('@')[0] || 'Athlete';
+                dom.authModal.classList.add('hidden');
+                showNotification('Welcome back!', 'Ready to join the arena?', 'success');
             } else {
-                adminPostSection.classList.remove('admin-show');
-                toggleAdminBtn.textContent = "Switch to Admin Mode";
+                dom.loginTrigger.classList.remove('hidden');
+                dom.userProfile.classList.add('hidden');
+                dom.adminToggle.classList.add('hidden');
+                dom.composer.classList.add('hidden');
             }
-            
-            // Update current user display
-            currentUserAvatar.textContent = state.currentUser.avatar;
-            currentUserName.textContent = state.currentUser.name;
         }
 
-        // Handle new post submission
-        function handlePostSubmit(e) {
-            e.preventDefault();
-            
-            const title = document.getElementById('postTitle').value;
-            const content = document.getElementById('postContent').value;
-            const image = document.getElementById('postImage').value;
-            const category = document.getElementById('postCategory').value;
-            
-            // Create new post
-            const newPost = {
-                id: state.posts.length + 1,
-                title,
-                content,
-                authorId: state.currentUser.id,
-                authorName: state.currentUser.name,
-                authorAvatar: state.currentUser.avatar,
-                date: new Date().toISOString().split('T')[0],
-                category,
-                image: image || "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-                likes: 0,
-                comments: 0
-            };
-            
-            state.posts.unshift(newPost);
-            
-            // Reset form
-            postForm.reset();
-            
-            // Re-render posts
-            renderPosts();
-            
-            alert('Post published successfully!');
-        }
+        // --- 7. EVENT LISTENERS ---
+        dom.authToggle.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            dom.authTitle.innerHTML = isLoginMode 
+                ? 'Welcome <span class="text-rose-600">Back</span>' 
+                : 'Join the <span class="text-rose-600">Era</span>';
+            dom.authSubtitle.textContent = isLoginMode 
+                ? 'Sign in to your athlete profile.' 
+                : 'Sign up to react and comment on feeds.';
+            dom.authBtn.textContent = isLoginMode ? 'Sign In' : 'Create Account';
+            dom.authToggle.textContent = isLoginMode 
+                ? "Don't have an account? Sign Up" 
+                : 'Already have an account? Sign In';
+            dom.authError.classList.add('hidden');
+        });
 
-        // Render all posts
-        function renderPosts() {
-            postsContainer.innerHTML = '';
-            
-            state.posts.forEach(post => {
-                const postElement = createPostElement(post);
-                postsContainer.appendChild(postElement);
-            });
-        }
+        dom.authBtn.addEventListener('click', handleAuth);
+        dom.inputs.password.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleAuth();
+        });
 
-        // Create a post element
-        function createPostElement(post) {
-            const postElement = document.createElement('div');
-            postElement.className = 'post';
-            postElement.dataset.postId = post.id;
-            
-            // Get post comments
-            const postComments = state.comments.filter(comment => comment.postId === post.id);
-            
-            postElement.innerHTML = `
-                <div class="post-header">
-                    <div class="post-author">
-                        <div class="author-avatar" onclick="openUserProfile(getUserById(${post.authorId}))">${post.authorAvatar}</div>
-                        <div class="author-info">
-                            <h4>${post.authorName}</h4>
-                            <div class="post-date">${formatDate(post.date)}</div>
-                        </div>
-                    </div>
-                    <div class="post-category">${post.category}</div>
-                </div>
-                <h3 class="post-title">${post.title}</h3>
-                <p class="post-content">${post.content}</p>
-                ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-image">` : ''}
-                <div class="post-stats">
-                    <div class="post-stat" onclick="toggleLike(${post.id})">
-                        <i class="fas fa-heart ${isPostLikedByCurrentUser(post) ? 'active' : ''}"></i>
-                        <span>${post.likes}</span>
-                    </div>
-                    <div class="post-stat">
-                        <i class="fas fa-comment"></i>
-                        <span>${postComments.length}</span>
-                    </div>
-                    <div class="post-stat">
-                        <i class="fas fa-share"></i>
-                        <span>Share</span>
-                    </div>
-                </div>
-                <div class="comments-section">
-                    <div class="comment-form">
-                        <input type="text" class="comment-input" placeholder="Write a comment..." id="comment-input-${post.id}">
-                        <button class="comment-btn" onclick="addComment(${post.id})">Comment</button>
-                    </div>
-                    <div class="comments-list" id="comments-list-${post.id}">
-                        ${renderComments(post.id)}
-                    </div>
-                </div>
-            `;
-            
-            return postElement;
-        }
+        async function handleAuth() {
+            const email = dom.inputs.email.value.trim();
+            const password = dom.inputs.password.value;
 
-        // Render comments for a post
-        function renderComments(postId) {
-            const postComments = state.comments.filter(comment => comment.postId === postId);
-            
-            if (postComments.length === 0) {
-                return '<p style="color: var(--gray); text-align: center;">No comments yet. Be the first to comment!</p>';
+            if (!email || !password) {
+                dom.authError.textContent = 'Please fill in all fields';
+                dom.authError.classList.remove('hidden');
+                return;
             }
-            
-            let commentsHTML = '';
-            
-            postComments.forEach(comment => {
-                commentsHTML += `
-                    <div class="comment">
-                        <div class="comment-header">
-                            <div class="comment-author">
-                                <div class="comment-author-avatar" onclick="openUserProfile(getUserById(${comment.authorId}))">${comment.authorAvatar}</div>
-                                <div>
-                                    <strong>${comment.authorName}</strong>
-                                    <div style="font-size: 12px; color: var(--gray);">${formatDate(comment.date)}</div>
-                                </div>
-                            </div>
-                            <button class="reply-btn" onclick="showReplyInput(${comment.id})">Reply</button>
-                        </div>
-                        <p>${comment.content}</p>
-                        <div class="replies" id="replies-${comment.id}">
-                            ${renderReplies(comment.replies)}
-                        </div>
-                        <div class="reply-input" id="reply-input-${comment.id}" style="display: none; margin-top: 10px;">
-                            <input type="text" class="comment-input" placeholder="Write a reply..." id="reply-text-${comment.id}" style="width: 80%;">
-                            <button class="comment-btn" onclick="addReply(${comment.id})">Reply</button>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            return commentsHTML;
-        }
 
-        // Render replies for a comment
-        function renderReplies(replies) {
-            if (replies.length === 0) return '';
-            
-            let repliesHTML = '';
-            
-            replies.forEach(reply => {
-                repliesHTML += `
-                    <div class="comment">
-                        <div class="comment-header">
-                            <div class="comment-author">
-                                <div class="comment-author-avatar" onclick="openUserProfile(getUserById(${reply.authorId}))">${reply.authorAvatar}</div>
-                                <div>
-                                    <strong>${reply.authorName}</strong>
-                                    <div style="font-size: 12px; color: var(--gray);">${formatDate(reply.date)}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <p>${reply.content}</p>
-                    </div>
-                `;
-            });
-            
-            return repliesHTML;
-        }
+            if (password.length < 6) {
+                dom.authError.textContent = 'Password must be at least 6 characters';
+                dom.authError.classList.remove('hidden');
+                return;
+            }
 
-        // Render active users in sidebar
-        function renderActiveUsers() {
-            activeUsers.innerHTML = '';
-            
-            state.users.forEach(user => {
-                const userElement = document.createElement('div');
-                userElement.className = 'user-item';
-                userElement.onclick = () => openUserProfile(user);
-                
-                userElement.innerHTML = `
-                    <div class="user-item-avatar">${user.avatar}</div>
-                    <div>
-                        <strong>${user.name}</strong>
-                        <div style="font-size: 14px; color: var(--gray);">${user.role === 'admin' ? 'Admin' : 'Member'}</div>
-                    </div>
-                `;
-                
-                activeUsers.appendChild(userElement);
-            });
-        }
+            dom.authBtn.disabled = true;
+            const originalText = dom.authBtn.textContent;
+            dom.authBtn.textContent = 'Processing...';
+            dom.authError.classList.add('hidden');
 
-        // Open user profile modal
-        function openUserProfile(user) {
-            modalAvatar.textContent = user.avatar;
-            modalUserName.textContent = user.name;
-            modalUserRole.textContent = user.role === 'admin' ? 'Admin User' : 'Regular User';
-            modalUserJoinDate.textContent = `Member since: ${user.joinDate}`;
-            
-            // Calculate user stats
-            const userPosts = state.posts.filter(post => post.authorId === user.id).length;
-            const userComments = state.comments.filter(comment => comment.authorId === user.id).length;
-            
-            // Count replies made by user
-            let userReplies = 0;
-            state.comments.forEach(comment => {
-                comment.replies.forEach(reply => {
-                    if (reply.authorId === user.id) userReplies++;
-                });
-            });
-            
-            // Calculate total likes received on user's posts
-            let userLikes = 0;
-            state.posts.forEach(post => {
-                if (post.authorId === user.id) {
-                    userLikes += post.likes;
+            try {
+                const { data, error } = isLoginMode 
+                    ? await supabase.auth.signInWithPassword({ email, password })
+                    : await supabase.auth.signUp({ email, password });
+
+                if (error) throw error;
+
+                if (data.user) {
+                    user = data.user;
+                    updateUI();
+                    dom.inputs.email.value = '';
+                    dom.inputs.password.value = '';
+                    
+                    if (!isLoginMode) {
+                        showNotification('Welcome to SportEra!', 'Your account has been created.', 'success');
+                    }
                 }
-            });
-            
-            modalUserPosts.textContent = userPosts;
-            modalUserComments.textContent = userComments + userReplies;
-            modalUserLikes.textContent = userLikes;
-            
-            profileModal.style.display = 'flex';
-        }
-
-        // Helper function to format date
-        function formatDate(dateString) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return new Date(dateString).toLocaleDateString('en-US', options);
-        }
-
-        // Helper function to get user by ID
-        function getUserById(userId) {
-            return state.users.find(user => user.id === userId);
-        }
-
-        // Toggle like on a post
-        function toggleLike(postId) {
-            const post = state.posts.find(p => p.id === postId);
-            
-            if (post) {
-                // In a real app, you would check if the current user has already liked the post
-                // For simplicity, we'll just increment/decrement
-                post.likes += 1;
-                renderPosts();
+            } catch (error) {
+                dom.authError.textContent = error.message;
+                dom.authError.classList.remove('hidden');
+            } finally {
+                dom.authBtn.disabled = false;
+                dom.authBtn.textContent = originalText;
             }
         }
 
-        // Check if post is liked by current user (simplified for demo)
-        function isPostLikedByCurrentUser(post) {
-            // In a real app, this would check if the current user has liked this post
-            // For demo purposes, we'll just return false
-            return false;
+        dom.logoutBtn.addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            user = null;
+            updateUI();
+            showNotification('Logged out', 'Come back soon!', 'info');
+        });
+
+        dom.loginTrigger.addEventListener('click', () => {
+            dom.authModal.classList.remove('hidden');
+            dom.inputs.email.focus();
+        });
+
+        document.getElementById('close-auth').addEventListener('click', () => {
+            dom.authModal.classList.add('hidden');
+        });
+
+        dom.adminToggle.addEventListener('click', () => {
+            dom.composer.classList.toggle('hidden');
+            if (!dom.composer.classList.contains('hidden')) {
+                dom.inputs.postTitle.focus();
+            }
+        });
+
+        dom.cancelPost.addEventListener('click', () => {
+            dom.composer.classList.add('hidden');
+            dom.inputs.postTitle.value = '';
+            dom.inputs.postContent.value = '';
+            dom.inputs.postTag.value = '';
+            dom.inputs.postImage.value = '';
+        });
+
+        // --- 8. DATA FUNCTIONS ---
+        async function fetchFeed() {
+            setLoading(true);
+            try {
+                const { data, error } = await supabase
+                    .from('sports_feed')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .range(0, postsPerPage * currentPage - 1);
+
+                if (error) throw error;
+
+                posts = data || [];
+                renderFeed();
+            } catch (error) {
+                console.error('Error fetching feed:', error);
+                showNotification('Error', 'Failed to load feed. Please refresh.', 'error');
+            } finally {
+                setLoading(false);
+            }
         }
 
-        // Add a comment to a post
-        function addComment(postId) {
-            const commentInput = document.getElementById(`comment-input-${postId}`);
-            const content = commentInput.value.trim();
+        function renderFeed() {
+            dom.feed.innerHTML = '';
             
-            if (!content) return;
-            
-            const newComment = {
-                id: state.comments.length + 1,
-                postId,
-                authorId: state.currentUser.id,
-                authorName: state.currentUser.name,
-                authorAvatar: state.currentUser.avatar,
-                content,
-                date: new Date().toISOString().split('T')[0],
-                replies: []
-            };
-            
-            state.comments.push(newComment);
-            
-            // Update comment count on the post
-            const post = state.posts.find(p => p.id === postId);
-            if (post) {
-                // In a real app, you would count comments for this post
-                // For demo, we'll just increment
-                post.comments += 1;
+            if (posts.length === 0) {
+                dom.noPosts.classList.remove('hidden');
+                return;
             }
             
-            // Clear input
-            commentInput.value = '';
+            dom.noPosts.classList.add('hidden');
             
-            // Re-render posts to show the new comment
-            renderPosts();
-        }
-
-        // Show reply input for a comment
-        function showReplyInput(commentId) {
-            const replyInput = document.getElementById(`reply-input-${commentId}`);
-            replyInput.style.display = 'block';
-        }
-
-        // Add a reply to a comment
-        function addReply(commentId) {
-            const replyText = document.getElementById(`reply-text-${commentId}`);
-            const content = replyText.value.trim();
-            
-            if (!content) return;
-            
-            const comment = state.comments.find(c => c.id === commentId);
-            
-            if (comment) {
-                const newReply = {
-                    id: comment.replies.length + 1,
-                    authorId: state.currentUser.id,
-                    authorName: state.currentUser.name,
-                    authorAvatar: state.currentUser.avatar,
-                    content,
-                    date: new Date().toISOString().split('T')[0]
+            posts.forEach((post, index) => {
+                const tpl = document.getElementById('post-tpl').content.cloneNode(true);
+                
+                // Set content
+                tpl.querySelector('.post-title').textContent = post.title;
+                tpl.querySelector('.post-content').textContent = post.content;
+                tpl.querySelector('.post-tag').textContent = post.tag || 'Breaking';
+                tpl.querySelector('.like-count').textContent = post.likes?.length || 0;
+                tpl.querySelector('.comment-count').textContent = post.comments?.length || 0;
+                tpl.querySelector('.post-time').textContent = formatTime(post.created_at);
+                
+                // Handle image
+                if (post.image_url) {
+                    const container = tpl.querySelector('.post-img-container');
+                    container.classList.remove('hidden');
+                    tpl.querySelector('.post-img').src = post.image_url;
+                }
+                
+                // Like functionality
+                const likeBtn = tpl.querySelector('.like-btn');
+                const likeIcon = likeBtn.querySelector('i');
+                const likeCount = tpl.querySelector('.like-count');
+                const isLiked = post.likes?.includes(user?.id);
+                
+                if (isLiked) {
+                    likeBtn.classList.add('text-rose-500');
+                    likeIcon.className = 'fas fa-heart text-xl';
+                }
+                
+                likeBtn.addEventListener('click', async () => {
+                    if (!user) {
+                        dom.authModal.classList.remove('hidden');
+                        return;
+                    }
+                    
+                    const updatedLikes = isLiked 
+                        ? post.likes.filter(id => id !== user.id)
+                        : [...(post.likes || []), user.id];
+                    
+                    likeIcon.classList.add('like-animation');
+                    setTimeout(() => likeIcon.classList.remove('like-animation'), 400);
+                    
+                    if (!isLiked) {
+                        likeBtn.classList.add('text-rose-500');
+                        likeIcon.className = 'fas fa-heart text-xl';
+                    } else {
+                        likeBtn.classList.remove('text-rose-500');
+                        likeIcon.className = 'far fa-heart text-xl';
+                    }
+                    
+                    likeCount.textContent = updatedLikes.length;
+                    
+                    try {
+                        await supabase
+                            .from('sports_feed')
+                            .update({ likes: updatedLikes })
+                            .eq('id', post.id);
+                    } catch (error) {
+                        console.error('Error updating likes:', error);
+                    }
+                });
+                
+                // Comment functionality
+                const commentToggle = tpl.querySelector('.comment-toggle');
+                const drawer = tpl.querySelector('.comment-drawer');
+                const commentList = tpl.querySelector('.comment-list');
+                const commentInput = tpl.querySelector('.comment-input');
+                const commentSubmit = tpl.querySelector('.comment-submit');
+                const commentCount = tpl.querySelector('.comment-count');
+                
+                // Render existing comments
+                if (post.comments?.length > 0) {
+                    post.comments.forEach(comment => {
+                        const commentDiv = document.createElement('div');
+                        commentDiv.className = "flex gap-3 animate-slide-in";
+                        commentDiv.innerHTML = `
+                            <div class="w-8 h-8 rounded-lg bg-slate-800 flex-shrink-0 flex items-center justify-center text-[10px] text-slate-500">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="bg-slate-800/40 p-4 rounded-2xl rounded-tl-none flex-1">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest">Athlete</span>
+                                    <span class="text-[9px] text-slate-500">${formatTime(comment.time)}</span>
+                                </div>
+                                <p class="text-xs text-slate-300 leading-relaxed">${comment.text}</p>
+                            </div>
+                        `;
+                        commentList.appendChild(commentDiv);
+                    });
+                }
+                
+                commentToggle.addEventListener('click', () => {
+                    drawer.classList.toggle('hidden');
+                    if (!drawer.classList.contains('hidden')) {
+                        commentInput.focus();
+                    }
+                });
+                
+                const submitComment = async () => {
+                    if (!user) {
+                        dom.authModal.classList.remove('hidden');
+                        return;
+                    }
+                    
+                    const text = commentInput.value.trim();
+                    if (!text) return;
+                    
+                    const newComment = {
+                        user_id: user.id,
+                        text,
+                        time: new Date().toISOString()
+                    };
+                    
+                    const updatedComments = [...(post.comments || []), newComment];
+                    commentCount.textContent = updatedComments.length;
+                    
+                    // Add comment to UI immediately
+                    const commentDiv = document.createElement('div');
+                    commentDiv.className = "flex gap-3 animate-slide-in";
+                    commentDiv.innerHTML = `
+                        <div class="w-8 h-8 rounded-lg bg-slate-800 flex-shrink-0 flex items-center justify-center text-[10px] text-slate-500">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="bg-slate-800/40 p-4 rounded-2xl rounded-tl-none flex-1">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest">Athlete</span>
+                                <span class="text-[9px] text-slate-500">Just now</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">${text}</p>
+                        </div>
+                    `;
+                    commentList.appendChild(commentDiv);
+                    commentInput.value = '';
+                    commentList.scrollTop = commentList.scrollHeight;
+                    
+                    try {
+                        await supabase
+                            .from('sports_feed')
+                            .update({ comments: updatedComments })
+                            .eq('id', post.id);
+                    } catch (error) {
+                        console.error('Error adding comment:', error);
+                        showNotification('Error', 'Failed to post comment', 'error');
+                    }
                 };
                 
-                comment.replies.push(newReply);
+                commentSubmit.addEventListener('click', submitComment);
+                commentInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') submitComment();
+                });
                 
-                // Clear input and hide it
-                replyText.value = '';
-                document.getElementById(`reply-input-${commentId}`).style.display = 'none';
+                // Share functionality
+                tpl.querySelector('.share-btn').addEventListener('click', () => {
+                    if (navigator.share) {
+                        navigator.share({
+                            title: post.title,
+                            text: post.content.substring(0, 100) + '...',
+                            url: window.location.href,
+                        });
+                    } else {
+                        navigator.clipboard.writeText(post.title + '\n\n' + post.content.substring(0, 200));
+                        showNotification('Copied!', 'Post copied to clipboard', 'success');
+                    }
+                });
                 
-                // Re-render posts to show the new reply
-                renderPosts();
-            }
+                // Add animation delay
+                tpl.querySelector('article').style.animationDelay = `${index * 0.1}s`;
+                
+                dom.feed.appendChild(tpl);
+            });
         }
-
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
+        
+        dom.publishBtn.addEventListener('click', async () => {
+            const title = dom.inputs.postTitle.value.trim();
+            const content = dom.inputs.postContent.value.trim();
+            const tag = dom.inputs.postTag.value.trim();
+            const image_url = dom.inputs.postImage.value.trim();
+            
+            if (!title || !content || !user) {
+                showNotification('Missing info', 'Please fill in title and content', 'error');
+                return;
+            }
+            
+            dom.publishBtn.disabled = true;
+            const originalText = dom.publishBtn.textContent;
+            dom.publishBtn.textContent = 'Broadcasting...';
+            
+            try {
+                const { error } = await supabase.from('sports_feed').insert([{
+                    title,
+                    content,
+                    tag: tag || 'General',
+                    image_url: image_url || null,
+                    author_id: user.id,
+                    likes: [],
+                    comments: []
+                }]);
+                
+                if (error) throw error;
+                
+                showNotification('Published!', 'Your post is now live', 'success');
+                dom.inputs.postTitle.value = '';
+                dom.inputs.postContent.value = '';
+                dom.inputs.postTag.value = '';
+                dom.inputs.postImage.value = '';
+                dom.composer.classList.add('hidden');
+                
+                // Refresh feed
+                await fetchFeed();
+            } catch (error) {
+                console.error('Error publishing post:', error);
+                showNotification('Error', 'Failed to publish post', 'error');
+            } finally {
+                dom.publishBtn.disabled = false;
+                dom.publishBtn.textContent = originalText;
+            }
+        });
+        
+        // --- 9. REAL-TIME UPDATES ---
+        supabase
+            .channel('arena-live')
+            .on('postgres_changes', 
+                { event: '*', schema: 'public', table: 'sports_feed' }, 
+                debounce(() => fetchFeed(), 300)
+            )
+            .subscribe();
+        
+        // --- 10. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkUser();
+            await fetchFeed();
+            
+            // Add infinite scroll
+            window.addEventListener('scroll', debounce(() => {
+                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                    if (!isLoading && posts.length >= currentPage * postsPerPage) {
+                        currentPage++;
+                        fetchFeed();
+                    }
+                }
+            }, 200));
+        });
     </script>
 </body>
 </html>
