@@ -5,12 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sport Era | Professional Arena</title>
     
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https:;
+        script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://*.supabase.co 'unsafe-inline';
+        style-src 'self' https: 'unsafe-inline';
+        img-src 'self' https: data:;
+        font-src 'self' https:;
+        connect-src 'self' https://*.supabase.co;
+    ">
+    
+    <!-- Performance Optimizations -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap">
+    
     <!-- External Resources -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
+    <!-- Inline Critical CSS -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap');
 
@@ -21,6 +37,7 @@
             --card-bg: #0f172a;
             --success: #10b981;
             --warning: #f59e0b;
+            --danger: #ef4444;
         }
 
         body { 
@@ -34,32 +51,93 @@
             background: rgba(2, 6, 23, 0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
 
         .sport-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.07);
             border-radius: 2rem;
-            transition: all 0.4s;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, border-color;
         }
 
         .sport-card:hover {
             border-color: rgba(244, 63, 94, 0.4);
-            transform: translateY(-6px);
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         .btn-action {
             background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 800;
+            letter-spacing: 0.05em;
         }
 
-        .btn-action:hover {
+        .btn-action:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4);
         }
 
+        .btn-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-action:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .focus-visible:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, var(--accent), var(--accent-hover)); 
+            border-radius: 10px; 
+        }
+
+        /* Form Elements */
+        input, textarea, select {
+            background: rgba(30, 41, 59, 0.7) !important;
+            border: 1px solid rgba(51, 65, 85, 0.5) !important;
+            color: white !important;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15);
+            background: rgba(30, 41, 59, 0.9) !important;
+        }
+
+        /* Loading States */
         .shimmer {
-            background: linear-gradient(90deg, rgba(15, 23, 42, 0.4) 25%, rgba(30, 41, 59, 0.8) 50%, rgba(15, 23, 42, 0.4) 75%);
+            background: linear-gradient(
+                90deg,
+                rgba(15, 23, 42, 0.4) 25%,
+                rgba(30, 41, 59, 0.8) 50%,
+                rgba(15, 23, 42, 0.4) 75%
+            );
             background-size: 200% 100%;
             animation: loading 2s infinite;
         }
@@ -69,6 +147,26 @@
             100% { background-position: -200% 0; }
         }
 
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .pulse-subtle {
+            animation: pulse-subtle 2s infinite;
+        }
+
+        /* Notification */
         .notification {
             position: fixed;
             top: 100px;
@@ -80,7 +178,7 @@
             border-radius: 1rem;
             padding: 1rem 1.5rem;
             transform: translateX(120%);
-            transition: transform 0.4s;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             max-width: 350px;
         }
 
@@ -88,8 +186,18 @@
             transform: translateX(0);
         }
 
+        /* Image Placeholder */
+        .image-placeholder {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Like Animation */
         .like-animation {
-            animation: likePop 0.4s;
+            animation: likePop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes likePop {
@@ -98,16 +206,61 @@
             100% { transform: scale(1); }
         }
 
+        /* Fade In */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Mobile Optimizations */
         @media (max-width: 640px) {
-            .sport-card { border-radius: 1.5rem; }
+            .sport-card {
+                border-radius: 1.5rem;
+            }
+            .glass-nav {
+                backdrop-filter: blur(10px);
+            }
+            .notification {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --card-bg: rgba(15, 23, 42, 0.8);
+            }
         }
     </style>
 </head>
-<body>
+<body class="custom-scrollbar">
+    <!-- Skip to Content -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[1000] focus:px-4 focus:py-2 focus:bg-rose-600 focus:text-white focus:rounded-lg">
+        Skip to main content
+    </a>
+
     <!-- Notification System -->
-    <div id="notification" class="notification hidden">
+    <div id="notification" class="notification hidden" role="alert" aria-live="polite">
         <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-rose-600/20 flex items-center justify-center">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center">
                 <i class="fas fa-bell text-rose-500" id="notification-icon"></i>
             </div>
             <div>
@@ -118,60 +271,62 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[999] flex items-center justify-center hidden">
+    <div id="loading-overlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[999] flex items-center justify-center hidden" aria-live="polite" aria-busy="true">
         <div class="text-center">
-            <div class="w-20 h-20 border-4 border-slate-800 border-t-rose-600 rounded-full animate-spin mb-4"></div>
+            <div class="w-20 h-20 border-4 border-slate-800 border-t-rose-600 rounded-full animate-spin mb-4" aria-hidden="true"></div>
             <p class="text-slate-400 font-semibold tracking-widest text-sm">LOADING ARENA</p>
         </div>
     </div>
 
     <!-- Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-950/95">
-        <div class="bg-slate-900/90 w-full max-w-md p-8 rounded-[2.5rem] border border-white/10 shadow-2xl relative">
-            <button id="close-auth" class="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5">
+    <div id="auth-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-xl" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+        <div class="bg-slate-900/90 w-full max-w-md p-8 rounded-[2.5rem] border border-white/10 shadow-2xl relative animate-slide-in">
+            <button id="close-auth" class="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5 focus-visible" aria-label="Close authentication modal">
                 <i class="fas fa-times text-lg"></i>
             </button>
 
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-rose-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-500">
+                <div class="w-16 h-16 bg-rose-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-500 pulse-subtle" aria-hidden="true">
                     <i class="fas fa-trophy text-3xl"></i>
                 </div>
                 <h2 id="auth-title" class="text-3xl font-900 italic uppercase">Join the <span class="text-rose-600">Era</span></h2>
                 <p id="auth-subtitle" class="text-slate-400 text-sm mt-2">Sign up to react and comment on feeds.</p>
             </div>
 
-            <div class="space-y-4">
+            <form id="auth-form" class="space-y-4" novalidate>
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Email Address</label>
-                    <input type="email" id="email" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30" placeholder="athlete@sportera.com" required>
+                    <label for="email" class="text-xs font-bold text-slate-500 uppercase ml-1">Email Address</label>
+                    <input type="email" id="email" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30 focus-visible" placeholder="athlete@sportera.com" required>
+                    <div class="text-xs text-rose-400 hidden" id="email-error"></div>
                 </div>
                 <div class="space-y-1">
-                    <label class="text-xs font-bold text-slate-500 uppercase ml-1">Password</label>
-                    <input type="password" id="password" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30" placeholder="••••••••" minlength="6" required>
+                    <label for="password" class="text-xs font-bold text-slate-500 uppercase ml-1">Password</label>
+                    <input type="password" id="password" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30 focus-visible" placeholder="••••••••" minlength="6" required>
+                    <div class="text-xs text-rose-400 hidden" id="password-error"></div>
                 </div>
-                <div id="auth-error" class="text-rose-400 text-xs hidden text-center"></div>
-                <button id="auth-action-btn" class="w-full py-4 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm mt-4">
+                <div id="auth-error" class="text-rose-400 text-xs hidden text-center" role="alert"></div>
+                <button id="auth-action-btn" class="w-full py-4 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm mt-4 focus-visible">
                     Create Account
                 </button>
-                <button id="toggle-auth-mode" class="w-full text-center text-xs text-slate-500 hover:text-rose-500 transition-colors">
+                <button type="button" id="toggle-auth-mode" class="w-full text-center text-xs text-slate-500 hover:text-rose-500 transition-colors focus-visible">
                     Already have an account? Sign In
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav">
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav animate-slide-in" aria-label="Main navigation">
         <div class="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-rose-600 to-pink-600 flex items-center justify-center rounded-xl rotate-3 shadow-lg shadow-rose-900/40">
+                <div class="w-10 h-10 bg-gradient-to-br from-rose-600 to-pink-600 flex items-center justify-center rounded-xl rotate-3 shadow-lg shadow-rose-900/40" aria-hidden="true">
                     <i class="fas fa-bolt text-white text-xl -rotate-3"></i>
                 </div>
                 <span class="text-2xl font-900 tracking-tighter uppercase italic">Sport<span class="text-rose-600">Era</span></span>
             </div>
 
             <div class="flex items-center gap-4">
-                <button id="admin-toggle" class="hidden w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-600/10 hover:border-rose-600/30 transition-all duration-300">
+                <button id="admin-toggle" class="hidden w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-600/10 hover:border-rose-600/30 transition-all duration-300 focus-visible" aria-label="Create new post">
                     <i class="fas fa-plus"></i>
                 </button>
                 <div id="user-profile" class="hidden items-center gap-3">
@@ -179,11 +334,11 @@
                         <span id="display-email" class="text-xs font-bold text-slate-200 truncate max-w-[120px]"></span>
                         <span id="user-role" class="text-[10px] text-rose-500 font-bold uppercase tracking-widest">Athlete</span>
                     </div>
-                    <button id="logout-btn" class="w-10 h-10 bg-slate-800 hover:bg-rose-600 rounded-xl flex items-center justify-center transition-all duration-300 group">
+                    <button id="logout-btn" class="w-10 h-10 bg-slate-800 hover:bg-rose-600 rounded-xl flex items-center justify-center transition-all duration-300 group focus-visible" aria-label="Log out">
                         <i class="fas fa-sign-out-alt group-hover:rotate-90 transition-transform"></i>
                     </button>
                 </div>
-                <button id="login-trigger" class="px-6 py-2.5 btn-action rounded-xl text-sm font-bold uppercase tracking-tighter">
+                <button id="login-trigger" class="px-6 py-2.5 btn-action rounded-xl text-sm font-bold uppercase tracking-tighter focus-visible">
                     Enter Arena
                 </button>
             </div>
@@ -191,134 +346,163 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="pt-28 pb-20 max-w-2xl mx-auto px-4">
-        <!-- Admin Composer -->
-        <section id="composer" class="hidden mb-12">
+    <main id="main-content" class="pt-28 pb-20 max-w-2xl mx-auto px-4" role="main">
+        <!-- Broadcast Composer -->
+        <section id="composer" class="hidden mb-12 animate-in fade-in slide-in-from-top-4 duration-300" aria-label="Create new post">
             <div class="bg-gradient-to-br from-slate-900/50 to-slate-900/30 p-6 rounded-[2.5rem] border-2 border-dashed border-rose-600/30 backdrop-blur-sm">
                 <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                     <i class="fas fa-broadcast-tower text-rose-500"></i> Broadcast News
                 </h3>
-                <div class="space-y-4">
-                    <input type="text" id="post-title" placeholder="Catchy Headline..." class="w-full px-4 py-3 rounded-2xl focus:ring-2 focus:ring-rose-500/30">
-                    <textarea id="post-content" placeholder="Full story details..." rows="3" class="w-full px-4 py-3 rounded-2xl resize-none focus:ring-2 focus:ring-rose-500/30"></textarea>
+                <form id="post-form" class="space-y-4" novalidate>
+                    <div>
+                        <input type="text" id="post-title" placeholder="Catchy Headline..." class="w-full px-4 py-3 rounded-2xl focus:ring-2 focus:ring-rose-500/30 focus-visible" required maxlength="100">
+                        <div class="text-xs text-slate-500 mt-1 text-right" id="title-counter">0/100</div>
+                    </div>
+                    <div>
+                        <textarea id="post-content" placeholder="Full story details..." rows="3" class="w-full px-4 py-3 rounded-2xl resize-none focus:ring-2 focus:ring-rose-500/30 focus-visible" required maxlength="500"></textarea>
+                        <div class="text-xs text-slate-500 mt-1 text-right" id="content-counter">0/500</div>
+                    </div>
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="post-tag" placeholder="Sport (e.g. NBA)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30">
-                        <input type="text" id="post-image" placeholder="Image URL (optional)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30">
+                        <input type="text" id="post-tag" placeholder="Sport (e.g. NBA)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30 focus-visible" maxlength="20">
+                        <input type="url" id="post-image" placeholder="Image URL (optional)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30 focus-visible">
                     </div>
                     <div class="flex gap-4">
-                        <button id="cancel-post" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-2xl font-bold transition-colors">
+                        <button type="button" id="cancel-post" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-2xl font-bold transition-colors focus-visible">
                             Cancel
                         </button>
-                        <button id="publish-btn" class="flex-1 py-3 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm">
+                        <button id="publish-btn" class="flex-1 py-3 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm focus-visible">
                             Publish Live
                         </button>
                     </div>
-                </div>
+                </form>
             </div>
         </section>
 
         <!-- Feed List -->
-        <div id="feed" class="space-y-8">
+        <div id="feed" class="space-y-8" role="feed" aria-label="Sports feed">
             <!-- Skeletons -->
-            <div class="shimmer h-64 w-full rounded-[2.5rem]"></div>
-            <div class="shimmer h-64 w-full rounded-[2.5rem]"></div>
+            <div class="shimmer h-64 w-full rounded-[2.5rem]" aria-hidden="true"></div>
+            <div class="shimmer h-64 w-full rounded-[2.5rem]" aria-hidden="true"></div>
         </div>
 
         <!-- No Posts Message -->
-        <div id="no-posts" class="hidden text-center py-20 opacity-20">
-            <i class="fas fa-flag-checkered text-5xl mb-4"></i>
+        <div id="no-posts" class="hidden text-center py-20 opacity-20" aria-live="polite">
+            <i class="fas fa-flag-checkered text-5xl mb-4" aria-hidden="true"></i>
             <p class="font-bold tracking-[0.3em] text-slate-400">ARENA IS EMPTY</p>
             <p class="text-sm text-slate-600 mt-2">Be the first to post something!</p>
+        </div>
+
+        <!-- Load More Button -->
+        <div id="load-more-container" class="hidden text-center mt-12">
+            <button id="load-more-btn" class="px-8 py-3 bg-slate-800 hover:bg-slate-700 rounded-2xl font-bold transition-colors focus-visible">
+                Load More Posts
+            </button>
         </div>
     </main>
 
     <!-- Post Template -->
     <template id="post-tpl">
-        <article class="sport-card">
+        <article class="sport-card fade-in" role="article">
             <div class="p-8">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-rose-600/10 flex items-center justify-center text-rose-500 text-xs">
+                        <div class="w-8 h-8 rounded-lg bg-rose-600/10 flex items-center justify-center text-rose-500 text-xs" aria-hidden="true">
                             <i class="fas fa-user-shield"></i>
                         </div>
                         <div>
-                            <span class="block text-xs font-bold text-slate-200">SportEra Editor <i class="fas fa-check-circle text-blue-400 ml-1"></i></span>
-                            <span class="post-time text-[10px] text-slate-500 uppercase font-bold tracking-widest"></span>
+                            <span class="block text-xs font-bold text-slate-200">SportEra Editor <i class="fas fa-check-circle text-blue-400 ml-1" aria-hidden="true"></i></span>
+                            <span class="post-time text-[10px] text-slate-500 uppercase font-bold tracking-widest" aria-label="Posted time"></span>
                         </div>
                     </div>
-                    <span class="post-tag text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 bg-rose-600/10 text-rose-500 rounded-md border border-rose-600/20"></span>
+                    <span class="post-tag text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 bg-rose-600/10 text-rose-500 rounded-md border border-rose-600/20" aria-label="Category"></span>
                 </div>
 
                 <h2 class="post-title text-2xl font-800 tracking-tight leading-tight mb-4 italic"></h2>
                 <p class="post-content text-slate-400 text-sm leading-relaxed mb-6"></p>
 
                 <div class="post-img-container hidden rounded-[1.5rem] overflow-hidden border border-white/5 mb-6 bg-slate-900">
-                    <img src="" class="post-img w-full h-auto object-cover max-h-96 transition-opacity duration-300 opacity-0" 
-                         onload="this.classList.remove('opacity-0'); this.classList.add('opacity-100')"
-                         onerror="this.onerror=null; this.classList.add('hidden')"
-                         alt="news image">
+                    <img data-src="" class="post-img w-full h-auto object-cover max-h-96 transition-opacity duration-300 opacity-0" alt="news image">
                 </div>
 
                 <div class="flex items-center gap-8 pt-2 border-t border-white/5">
-                    <button class="like-btn flex items-center gap-2 text-slate-400 hover:text-rose-500 transition-colors font-bold group">
-                        <i class="far fa-heart text-xl group-hover:scale-110 transition-transform"></i>
+                    <button class="like-btn flex items-center gap-2 text-slate-400 hover:text-rose-500 transition-colors font-bold group focus-visible" aria-label="Like post">
+                        <i class="far fa-heart text-xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
                         <span class="like-count text-xs">0</span>
                     </button>
-                    <button class="comment-toggle flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors font-bold group">
-                        <i class="far fa-comment text-xl group-hover:scale-110 transition-transform"></i>
+                    <button class="comment-toggle flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors font-bold group focus-visible" aria-label="Toggle comments">
+                        <i class="far fa-comment text-xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
                         <span class="comment-count text-xs">0</span>
                     </button>
-                    <button class="share-btn flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors font-bold group ml-auto">
-                        <i class="fas fa-share-alt text-lg group-hover:scale-110 transition-transform"></i>
+                    <button class="share-btn flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors font-bold group ml-auto focus-visible" aria-label="Share post">
+                        <i class="fas fa-share-alt text-lg group-hover:scale-110 transition-transform" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Comment Section -->
             <div class="comment-drawer hidden bg-black/30 border-t border-white/5 p-8">
-                <div class="comment-list space-y-4 mb-6 max-h-60 overflow-y-auto pr-2"></div>
+                <div class="comment-list space-y-4 mb-6 max-h-60 overflow-y-auto custom-scrollbar pr-2" role="list"></div>
                 <div class="relative">
-                    <input type="text" placeholder="Write a comment..." class="comment-input w-full px-5 py-3 rounded-2xl pr-14 text-sm focus:ring-2 focus:ring-rose-500/30">
-                    <button class="comment-submit absolute right-2 top-2 w-9 h-9 btn-action rounded-xl flex items-center justify-center hover:scale-105 transition-transform">
-                        <i class="fas fa-paper-plane text-xs"></i>
+                    <input type="text" placeholder="Write a comment..." class="comment-input w-full px-5 py-3 rounded-2xl pr-14 text-sm focus:ring-2 focus:ring-rose-500/30 focus-visible" aria-label="Write a comment" maxlength="200">
+                    <button class="comment-submit absolute right-2 top-2 w-9 h-9 btn-action rounded-xl flex items-center justify-center hover:scale-105 transition-transform focus-visible" aria-label="Submit comment">
+                        <i class="fas fa-paper-plane text-xs" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
         </article>
     </template>
 
+    <!-- Main JavaScript -->
     <script>
-        // ==================== CONFIGURATION ====================
+        // ============================================
+        // CONFIGURATION & INITIALIZATION
+        // ============================================
+        
         const SUPABASE_URL = 'https://wmptvyecyozxhgyetohz.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtcHR2eWVjeW96eGhneWV0b2h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNzQ1MjAsImV4cCI6MjA4MTc1MDUyMH0.syaPl5menEkDnjDu-0aP_5UijPIQhPGvnxqJE4K4WpQ';
-        
-        // Admin email addresses
-        const ADMIN_EMAILS = [
-            'admin333@gmail.com',
-            'suprememotive43@gmail.com'
-        ];
 
-        // ==================== INITIALIZATION ====================
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Admin emails
+        const ADMIN_EMAILS = ['admin333@gmail.com', 'suprememotive43@gmail.com'];
 
-        // ==================== STATE ====================
-        let user = null;
-        let isLoginMode = false;
-        let posts = [];
+        // Initialize Supabase
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (error) {
+            console.error('Failed to initialize Supabase:', error);
+        }
 
-        // ==================== DOM ELEMENTS ====================
-        const elements = {
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+        const AppState = {
+            user: null,
+            isLoginMode: false,
+            isLoading: false,
+            posts: [],
+            currentPage: 1,
+            postsPerPage: 10,
+            hasMorePosts: true
+        };
+
+        // ============================================
+        // DOM CACHE & REFERENCES
+        // ============================================
+        const DOM = {
             notification: document.getElementById('notification'),
             notificationTitle: document.getElementById('notification-title'),
             notificationMessage: document.getElementById('notification-message'),
             notificationIcon: document.getElementById('notification-icon'),
             loadingOverlay: document.getElementById('loading-overlay'),
             authModal: document.getElementById('auth-modal'),
+            authForm: document.getElementById('auth-form'),
             authTitle: document.getElementById('auth-title'),
             authSubtitle: document.getElementById('auth-subtitle'),
             authBtn: document.getElementById('auth-action-btn'),
             authToggle: document.getElementById('toggle-auth-mode'),
             authError: document.getElementById('auth-error'),
+            emailError: document.getElementById('email-error'),
+            passwordError: document.getElementById('password-error'),
             loginTrigger: document.getElementById('login-trigger'),
             userProfile: document.getElementById('user-profile'),
             displayEmail: document.getElementById('display-email'),
@@ -326,74 +510,98 @@
             logoutBtn: document.getElementById('logout-btn'),
             adminToggle: document.getElementById('admin-toggle'),
             composer: document.getElementById('composer'),
+            postForm: document.getElementById('post-form'),
             feed: document.getElementById('feed'),
             noPosts: document.getElementById('no-posts'),
-            publishBtn: document.getElementById('publish-btn'),
-            cancelPost: document.getElementById('cancel-post'),
-            email: document.getElementById('email'),
-            password: document.getElementById('password'),
-            postTitle: document.getElementById('post-title'),
-            postContent: document.getElementById('post-content'),
-            postTag: document.getElementById('post-tag'),
-            postImage: document.getElementById('post-image')
+            loadMoreContainer: document.getElementById('load-more-container'),
+            loadMoreBtn: document.getElementById('load-more-btn'),
+            inputs: {
+                email: document.getElementById('email'),
+                password: document.getElementById('password'),
+                postTitle: document.getElementById('post-title'),
+                postContent: document.getElementById('post-content'),
+                postTag: document.getElementById('post-tag'),
+                postImage: document.getElementById('post-image')
+            },
+            titleCounter: document.getElementById('title-counter'),
+            contentCounter: document.getElementById('content-counter')
         };
 
-        // ==================== UTILITY FUNCTIONS ====================
-        function showNotification(title, message, type = 'info') {
-            elements.notificationTitle.textContent = title;
-            elements.notificationMessage.textContent = message;
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
 
-            // Set icon based on type
-            if (type === 'success') {
-                elements.notificationIcon.className = 'fas fa-check text-emerald-500';
-                elements.notificationIcon.parentElement.className = 'w-8 h-8 rounded-lg bg-emerald-600/20 flex items-center justify-center';
-            } else if (type === 'error') {
-                elements.notificationIcon.className = 'fas fa-exclamation-circle text-rose-500';
-                elements.notificationIcon.parentElement.className = 'w-8 h-8 rounded-lg bg-rose-600/20 flex items-center justify-center';
-            } else {
-                elements.notificationIcon.className = 'fas fa-bell text-rose-500';
-                elements.notificationIcon.parentElement.className = 'w-8 h-8 rounded-lg bg-rose-600/20 flex items-center justify-center';
+        function showNotification(title, message, type = 'info') {
+            if (!DOM.notification) return;
+            
+            DOM.notificationTitle.textContent = title;
+            DOM.notificationMessage.textContent = message;
+
+            switch (type) {
+                case 'success':
+                    DOM.notificationIcon.className = 'fas fa-check text-emerald-500';
+                    DOM.notificationIcon.parentElement.className = 'w-8 h-8 rounded-lg bg-emerald-600/20 flex items-center justify-center';
+                    break;
+                case 'error':
+                    DOM.notificationIcon.className = 'fas fa-exclamation-circle text-rose-500';
+                    DOM.notificationIcon.parentElement.className = 'w-8 h-8 rounded-lg bg-rose-600/20 flex items-center justify-center';
+                    break;
+                default:
+                    DOM.notificationIcon.className = 'fas fa-bell text-rose-500';
+                    DOM.notificationIcon.parentElement.className = 'w-8 h-8 rounded-lg bg-rose-600/20 flex items-center justify-center';
             }
 
-            elements.notification.classList.remove('hidden');
-            setTimeout(() => elements.notification.classList.add('show'), 10);
+            DOM.notification.classList.remove('hidden');
+            setTimeout(() => DOM.notification.classList.add('show'), 10);
 
             setTimeout(() => {
-                elements.notification.classList.remove('show');
-                setTimeout(() => elements.notification.classList.add('hidden'), 400);
+                DOM.notification.classList.remove('show');
+                setTimeout(() => DOM.notification.classList.add('hidden'), 400);
             }, 4000);
         }
 
         function setLoading(state) {
+            AppState.isLoading = state;
             if (state) {
-                elements.loadingOverlay.classList.remove('hidden');
+                DOM.loadingOverlay?.classList.remove('hidden');
             } else {
-                elements.loadingOverlay.classList.add('hidden');
+                DOM.loadingOverlay?.classList.add('hidden');
             }
         }
 
         function formatTime(date) {
-            const now = new Date();
-            const diffMs = now - new Date(date);
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMs / 3600000);
-            const diffDays = Math.floor(diffMs / 86400000);
+            try {
+                const now = new Date();
+                const diffMs = now - new Date(date);
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
 
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins}m ago`;
-            if (diffHours < 24) return `${diffHours}h ago`;
-            if (diffDays < 7) return `${diffDays}d ago`;
-            return new Date(date).toLocaleDateString();
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins}m ago`;
+                if (diffHours < 24) return `${diffHours}h ago`;
+                if (diffDays < 7) return `${diffDays}d ago`;
+                return new Date(date).toLocaleDateString();
+            } catch {
+                return 'Recently';
+            }
         }
 
-        // ==================== AUTH FUNCTIONS ====================
+        function isAdmin() {
+            return AppState.user && ADMIN_EMAILS.includes(AppState.user.email.toLowerCase());
+        }
+
+        // ============================================
+        // AUTHENTICATION FUNCTIONS
+        // ============================================
+
         async function checkUser() {
             setLoading(true);
             try {
-                const { data: { user: activeUser }, error } = await supabase.auth.getUser();
+                const { data: { user }, error } = await supabase.auth.getUser();
                 
-                if (!error && activeUser) {
-                    user = activeUser;
+                if (!error && user) {
+                    AppState.user = user;
                     updateUI();
                     showNotification('Welcome back!', 'Ready to join the arena?', 'success');
                 }
@@ -404,77 +612,74 @@
             }
         }
 
-        function isAdmin() {
-            return user && ADMIN_EMAILS.includes(user.email.toLowerCase());
-        }
-
         function updateUI() {
-            if (user) {
-                elements.loginTrigger.classList.add('hidden');
-                elements.userProfile.classList.remove('hidden');
+            if (AppState.user) {
+                DOM.loginTrigger?.classList.add('hidden');
+                DOM.userProfile?.classList.remove('hidden');
                 
-                // Set email display
-                elements.displayEmail.textContent = user.email || 'Athlete';
-                
-                // Set user role
-                if (isAdmin()) {
-                    elements.userRole.textContent = 'Admin';
-                    elements.userRole.className = 'text-[10px] text-emerald-500 font-bold uppercase tracking-widest';
-                    elements.adminToggle.classList.remove('hidden');
-                } else {
-                    elements.userRole.textContent = 'Athlete';
-                    elements.userRole.className = 'text-[10px] text-rose-500 font-bold uppercase tracking-widest';
-                    elements.adminToggle.classList.add('hidden');
-                    elements.composer.classList.add('hidden');
+                if (DOM.displayEmail) {
+                    const email = AppState.user.email || '';
+                    DOM.displayEmail.textContent = email.split('@')[0] || 'Athlete';
                 }
                 
-                elements.authModal.classList.add('hidden');
+                if (DOM.userRole) {
+                    if (isAdmin()) {
+                        DOM.userRole.textContent = 'Admin';
+                        DOM.userRole.className = 'text-[10px] text-emerald-500 font-bold uppercase tracking-widest';
+                        DOM.adminToggle?.classList.remove('hidden');
+                    } else {
+                        DOM.userRole.textContent = 'Athlete';
+                        DOM.userRole.className = 'text-[10px] text-rose-500 font-bold uppercase tracking-widest';
+                        DOM.adminToggle?.classList.add('hidden');
+                        DOM.composer?.classList.add('hidden');
+                    }
+                }
+                
+                DOM.authModal?.classList.add('hidden');
             } else {
-                elements.loginTrigger.classList.remove('hidden');
-                elements.userProfile.classList.add('hidden');
-                elements.adminToggle.classList.add('hidden');
-                elements.composer.classList.add('hidden');
+                DOM.loginTrigger?.classList.remove('hidden');
+                DOM.userProfile?.classList.add('hidden');
+                DOM.adminToggle?.classList.add('hidden');
+                DOM.composer?.classList.add('hidden');
             }
         }
 
         async function handleAuth() {
-            const email = elements.email.value.trim();
-            const password = elements.password.value;
-
-            // Basic validation
-            if (!email || !password) {
-                elements.authError.textContent = 'Please fill in all fields';
-                elements.authError.classList.remove('hidden');
+            const email = DOM.inputs.email?.value.trim() || '';
+            const password = DOM.inputs.password?.value || '';
+            
+            // Validation
+            if (!email || !/\S+@\S+\.\S+/.test(email)) {
+                DOM.emailError.textContent = 'Please enter a valid email';
+                DOM.emailError.classList.remove('hidden');
                 return;
             }
-
-            if (password.length < 6) {
-                elements.authError.textContent = 'Password must be at least 6 characters';
-                elements.authError.classList.remove('hidden');
+            
+            if (!password || password.length < 6) {
+                DOM.passwordError.textContent = 'Password must be at least 6 characters';
+                DOM.passwordError.classList.remove('hidden');
                 return;
             }
-
-            // Disable button and show loading
-            elements.authBtn.disabled = true;
-            const originalText = elements.authBtn.textContent;
-            elements.authBtn.textContent = 'Processing...';
-            elements.authError.classList.add('hidden');
-
+            
+            DOM.authBtn.disabled = true;
+            DOM.authBtn.textContent = 'Processing...';
+            DOM.authError?.classList.add('hidden');
+            
             try {
-                if (isLoginMode) {
+                if (AppState.isLoginMode) {
                     // Sign in
                     const { data, error } = await supabase.auth.signInWithPassword({
                         email,
                         password
                     });
-
+                    
                     if (error) throw error;
-
+                    
                     if (data.user) {
-                        user = data.user;
+                        AppState.user = data.user;
                         updateUI();
-                        elements.email.value = '';
-                        elements.password.value = '';
+                        DOM.inputs.email.value = '';
+                        DOM.inputs.password.value = '';
                         showNotification('Welcome back!', 'Successfully signed in', 'success');
                     }
                 } else {
@@ -483,32 +688,32 @@
                         email,
                         password
                     });
-
+                    
                     if (error) throw error;
-
+                    
                     if (data.user) {
-                        user = data.user;
+                        AppState.user = data.user;
                         updateUI();
-                        elements.email.value = '';
-                        elements.password.value = '';
+                        DOM.inputs.email.value = '';
+                        DOM.inputs.password.value = '';
                         showNotification('Welcome to SportEra!', 'Your account has been created.', 'success');
                     }
                 }
             } catch (error) {
                 console.error('Auth error:', error);
-                elements.authError.textContent = error.message || 'Authentication failed';
-                elements.authError.classList.remove('hidden');
+                DOM.authError.textContent = error.message || 'Authentication failed';
+                DOM.authError.classList.remove('hidden');
                 showNotification('Error', error.message || 'Authentication failed', 'error');
             } finally {
-                elements.authBtn.disabled = false;
-                elements.authBtn.textContent = originalText;
+                DOM.authBtn.disabled = false;
+                DOM.authBtn.textContent = AppState.isLoginMode ? 'Sign In' : 'Create Account';
             }
         }
 
         async function handleLogout() {
             try {
                 await supabase.auth.signOut();
-                user = null;
+                AppState.user = null;
                 updateUI();
                 showNotification('Logged out', 'Come back soon!', 'info');
             } catch (error) {
@@ -517,19 +722,33 @@
             }
         }
 
-        // ==================== POST FUNCTIONS ====================
+        // ============================================
+        // POST FUNCTIONS
+        // ============================================
+
         async function fetchFeed() {
+            if (AppState.isLoading || !AppState.hasMorePosts) return;
+            
             setLoading(true);
+            
             try {
+                const start = (AppState.currentPage - 1) * AppState.postsPerPage;
+                const end = start + AppState.postsPerPage - 1;
+                
                 const { data, error } = await supabase
                     .from('sports_feed')
                     .select('*')
                     .order('created_at', { ascending: false })
-                    .limit(20);
-
+                    .range(start, end);
+                
                 if (error) throw error;
-
-                posts = data || [];
+                
+                AppState.posts = AppState.currentPage === 1 
+                    ? data || [] 
+                    : [...AppState.posts, ...(data || [])];
+                
+                AppState.hasMorePosts = (data?.length || 0) === AppState.postsPerPage;
+                
                 renderFeed();
             } catch (error) {
                 console.error('Error fetching feed:', error);
@@ -540,184 +759,258 @@
         }
 
         function renderFeed() {
-            elements.feed.innerHTML = '';
-
-            if (posts.length === 0) {
-                elements.noPosts.classList.remove('hidden');
+            if (!DOM.feed) return;
+            
+            if (AppState.currentPage === 1) {
+                DOM.feed.innerHTML = '';
+            }
+            
+            if (AppState.posts.length === 0) {
+                DOM.noPosts?.classList.remove('hidden');
+                DOM.loadMoreContainer?.classList.add('hidden');
                 return;
             }
-
-            elements.noPosts.classList.add('hidden');
-
-            posts.forEach((post, index) => {
-                const tpl = document.getElementById('post-tpl').content.cloneNode(true);
-
+            
+            DOM.noPosts?.classList.add('hidden');
+            
+            AppState.posts.slice((AppState.currentPage - 1) * AppState.postsPerPage).forEach((post, index) => {
+                const tpl = document.getElementById('post-tpl')?.content.cloneNode(true);
+                if (!tpl) return;
+                
                 // Set content
-                tpl.querySelector('.post-title').textContent = post.title;
-                tpl.querySelector('.post-content').textContent = post.content;
-                tpl.querySelector('.post-tag').textContent = post.tag || 'Breaking';
-                tpl.querySelector('.like-count').textContent = post.likes?.length || 0;
-                tpl.querySelector('.comment-count').textContent = post.comments?.length || 0;
-                tpl.querySelector('.post-time').textContent = formatTime(post.created_at);
-
+                const titleEl = tpl.querySelector('.post-title');
+                const contentEl = tpl.querySelector('.post-content');
+                const tagEl = tpl.querySelector('.post-tag');
+                const timeEl = tpl.querySelector('.post-time');
+                const likeCountEl = tpl.querySelector('.like-count');
+                const commentCountEl = tpl.querySelector('.comment-count');
+                
+                if (titleEl) titleEl.textContent = post.title || '';
+                if (contentEl) contentEl.textContent = post.content || '';
+                if (tagEl) tagEl.textContent = post.tag || 'Breaking';
+                if (likeCountEl) likeCountEl.textContent = (post.likes?.length || 0).toString();
+                if (commentCountEl) commentCountEl.textContent = (post.comments?.length || 0).toString();
+                if (timeEl) {
+                    timeEl.textContent = formatTime(post.created_at);
+                    timeEl.setAttribute('datetime', post.created_at);
+                }
+                
                 // Handle image
                 if (post.image_url) {
                     const container = tpl.querySelector('.post-img-container');
                     const img = tpl.querySelector('.post-img');
-                    container.classList.remove('hidden');
-                    img.src = post.image_url;
+                    
+                    if (container && img) {
+                        container.classList.remove('hidden');
+                        img.src = post.image_url;
+                        img.onload = () => {
+                            img.classList.remove('opacity-0');
+                            img.classList.add('opacity-100');
+                        };
+                        img.onerror = () => {
+                            container.classList.add('hidden');
+                        };
+                    }
                 }
-
+                
                 // Like functionality
                 const likeBtn = tpl.querySelector('.like-btn');
-                const likeIcon = likeBtn.querySelector('i');
-                const likeCount = tpl.querySelector('.like-count');
-                const isLiked = user && post.likes?.includes(user.id);
-
-                if (isLiked) {
-                    likeBtn.classList.add('text-rose-500');
-                    likeIcon.className = 'fas fa-heart text-xl';
-                }
-
-                likeBtn.addEventListener('click', async () => {
-                    if (!user) {
-                        elements.authModal.classList.remove('hidden');
-                        return;
-                    }
-
-                    const updatedLikes = isLiked 
-                        ? post.likes.filter(id => id !== user.id)
-                        : [...(post.likes || []), user.id];
-
-                    // Optimistic update
-                    likeIcon.classList.add('like-animation');
-                    setTimeout(() => likeIcon.classList.remove('like-animation'), 400);
-
-                    if (!isLiked) {
+                if (likeBtn) {
+                    const isLiked = AppState.user && post.likes?.includes(AppState.user.id);
+                    const likeIcon = likeBtn.querySelector('i');
+                    
+                    if (isLiked) {
                         likeBtn.classList.add('text-rose-500');
-                        likeIcon.className = 'fas fa-heart text-xl';
-                    } else {
-                        likeBtn.classList.remove('text-rose-500');
-                        likeIcon.className = 'far fa-heart text-xl';
+                        if (likeIcon) likeIcon.className = 'fas fa-heart text-xl';
                     }
-
-                    likeCount.textContent = updatedLikes.length;
-
-                    try {
-                        await supabase
-                            .from('sports_feed')
-                            .update({ likes: updatedLikes })
-                            .eq('id', post.id);
-                    } catch (error) {
-                        console.error('Error updating likes:', error);
-                        showNotification('Error', 'Failed to update like', 'error');
-                    }
-                });
-
-                // Comment functionality
-                const commentToggle = tpl.querySelector('.comment-toggle');
-                const drawer = tpl.querySelector('.comment-drawer');
-                const commentList = tpl.querySelector('.comment-list');
-                const commentInput = tpl.querySelector('.comment-input');
-                const commentSubmit = tpl.querySelector('.comment-submit');
-                const commentCount = tpl.querySelector('.comment-count');
-
-                // Render existing comments
-                if (post.comments?.length > 0) {
-                    post.comments.forEach(comment => {
-                        const commentDiv = document.createElement('div');
-                        commentDiv.className = "flex gap-3";
-                        commentDiv.innerHTML = `
-                            <div class="w-8 h-8 rounded-lg bg-slate-800 flex-shrink-0 flex items-center justify-center text-[10px] text-slate-500">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="bg-slate-800/40 p-4 rounded-2xl rounded-tl-none flex-1">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest">Athlete</span>
-                                    <span class="text-[9px] text-slate-500">${formatTime(comment.time)}</span>
-                                </div>
-                                <p class="text-xs text-slate-300 leading-relaxed">${comment.text}</p>
-                            </div>
-                        `;
-                        commentList.appendChild(commentDiv);
+                    
+                    likeBtn.addEventListener('click', async () => {
+                        if (!AppState.user) {
+                            DOM.authModal?.classList.remove('hidden');
+                            return;
+                        }
+                        
+                        const updatedLikes = isLiked 
+                            ? (post.likes || []).filter(id => id !== AppState.user.id)
+                            : [...(post.likes || []), AppState.user.id];
+                        
+                        // Optimistic update
+                        const currentCount = parseInt(likeCountEl.textContent) || 0;
+                        likeCountEl.textContent = isLiked ? (currentCount - 1) : (currentCount + 1);
+                        
+                        if (!isLiked) {
+                            likeBtn.classList.add('text-rose-500');
+                            if (likeIcon) likeIcon.className = 'fas fa-heart text-xl';
+                        } else {
+                            likeBtn.classList.remove('text-rose-500');
+                            if (likeIcon) likeIcon.className = 'far fa-heart text-xl';
+                        }
+                        
+                        if (likeIcon) {
+                            likeIcon.classList.add('like-animation');
+                            setTimeout(() => likeIcon.classList.remove('like-animation'), 400);
+                        }
+                        
+                        // Update server
+                        try {
+                            await supabase
+                                .from('sports_feed')
+                                .update({ likes: updatedLikes })
+                                .eq('id', post.id);
+                        } catch (error) {
+                            console.error('Error updating likes:', error);
+                            // Revert optimistic update
+                            likeCountEl.textContent = currentCount;
+                            if (isLiked) {
+                                likeBtn.classList.add('text-rose-500');
+                                if (likeIcon) likeIcon.className = 'fas fa-heart text-xl';
+                            } else {
+                                likeBtn.classList.remove('text-rose-500');
+                                if (likeIcon) likeIcon.className = 'far fa-heart text-xl';
+                            }
+                            showNotification('Error', 'Failed to update like', 'error');
+                        }
                     });
                 }
+                
+                // Comment functionality
+                setupCommentFunctionality(tpl, post);
+                
+                // Share functionality
+                const shareBtn = tpl.querySelector('.share-btn');
+                if (shareBtn) {
+                    shareBtn.addEventListener('click', () => {
+                        const shareData = {
+                            title: post.title,
+                            text: post.content?.substring(0, 100) + '...',
+                            url: window.location.href,
+                        };
+                        
+                        if (navigator.share) {
+                            navigator.share(shareData);
+                        } else {
+                            navigator.clipboard.writeText(`${post.title}\n\n${post.content?.substring(0, 200)}...`);
+                            showNotification('Copied!', 'Post copied to clipboard', 'success');
+                        }
+                    });
+                }
+                
+                DOM.feed.appendChild(tpl);
+            });
+            
+            // Show/hide load more button
+            if (DOM.loadMoreContainer) {
+                if (AppState.hasMorePosts) {
+                    DOM.loadMoreContainer.classList.remove('hidden');
+                } else {
+                    DOM.loadMoreContainer.classList.add('hidden');
+                }
+            }
+        }
 
-                commentToggle.addEventListener('click', () => {
-                    drawer.classList.toggle('hidden');
-                    if (!drawer.classList.contains('hidden')) {
-                        commentInput.focus();
-                    }
-                });
-
-                const submitComment = async () => {
-                    if (!user) {
-                        elements.authModal.classList.remove('hidden');
-                        return;
-                    }
-
-                    const text = commentInput.value.trim();
-                    if (!text) return;
-
-                    const newComment = {
-                        user_id: user.id,
-                        text,
-                        time: new Date().toISOString()
-                    };
-
-                    const updatedComments = [...(post.comments || []), newComment];
-                    commentCount.textContent = updatedComments.length;
-
-                    // Add comment to UI immediately
+        function setupCommentFunctionality(tpl, post) {
+            const commentToggle = tpl.querySelector('.comment-toggle');
+            const drawer = tpl.querySelector('.comment-drawer');
+            const commentList = tpl.querySelector('.comment-list');
+            const commentInput = tpl.querySelector('.comment-input');
+            const commentSubmit = tpl.querySelector('.comment-submit');
+            
+            if (!commentToggle || !drawer || !commentList || !commentInput || !commentSubmit) {
+                return;
+            }
+            
+            // Render existing comments
+            if (post.comments?.length > 0) {
+                post.comments.forEach(comment => {
                     const commentDiv = document.createElement('div');
                     commentDiv.className = "flex gap-3";
                     commentDiv.innerHTML = `
-                        <div class="w-8 h-8 rounded-lg bg-slate-800 flex-shrink-0 flex items-center justify-center text-[10px] text-slate-500">
+                        <div class="w-8 h-8 rounded-lg bg-slate-800 flex-shrink-0 flex items-center justify-center text-[10px] text-slate-500" aria-hidden="true">
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="bg-slate-800/40 p-4 rounded-2xl rounded-tl-none flex-1">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest">Athlete</span>
-                                <span class="text-[9px] text-slate-500">Just now</span>
+                                <span class="text-[9px] text-slate-500">${formatTime(comment.time)}</span>
                             </div>
-                            <p class="text-xs text-slate-300 leading-relaxed">${text}</p>
+                            <p class="text-xs text-slate-300 leading-relaxed">${comment.text}</p>
                         </div>
                     `;
                     commentList.appendChild(commentDiv);
-                    commentInput.value = '';
-                    commentList.scrollTop = commentList.scrollHeight;
-
-                    try {
-                        await supabase
-                            .from('sports_feed')
-                            .update({ comments: updatedComments })
-                            .eq('id', post.id);
-                    } catch (error) {
-                        console.error('Error adding comment:', error);
-                        showNotification('Error', 'Failed to post comment', 'error');
-                    }
+                });
+            }
+            
+            commentToggle.addEventListener('click', () => {
+                drawer.classList.toggle('hidden');
+                if (!drawer.classList.contains('hidden')) {
+                    commentInput.focus();
+                }
+            });
+            
+            const submitComment = async () => {
+                if (!AppState.user) {
+                    DOM.authModal?.classList.remove('hidden');
+                    return;
+                }
+                
+                const text = commentInput.value.trim();
+                if (!text) return;
+                
+                const newComment = {
+                    user_id: AppState.user.id,
+                    text,
+                    time: new Date().toISOString()
                 };
-
-                commentSubmit.addEventListener('click', submitComment);
-                commentInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') submitComment();
-                });
-
-                // Share functionality
-                tpl.querySelector('.share-btn').addEventListener('click', () => {
-                    if (navigator.share) {
-                        navigator.share({
-                            title: post.title,
-                            text: post.content.substring(0, 100) + '...',
-                            url: window.location.href,
-                        });
-                    } else {
-                        navigator.clipboard.writeText(post.title + '\n\n' + post.content.substring(0, 200));
-                        showNotification('Copied!', 'Post copied to clipboard', 'success');
+                
+                const updatedComments = [...(post.comments || []), newComment];
+                
+                // Update comment count
+                const commentCountEl = tpl.querySelector('.comment-count');
+                if (commentCountEl) {
+                    commentCountEl.textContent = updatedComments.length.toString();
+                }
+                
+                // Add comment to UI immediately
+                const commentDiv = document.createElement('div');
+                commentDiv.className = "flex gap-3";
+                commentDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-lg bg-slate-800 flex-shrink-0 flex items-center justify-center text-[10px] text-slate-500" aria-hidden="true">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="bg-slate-800/40 p-4 rounded-2xl rounded-tl-none flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] font-bold text-rose-500 uppercase tracking-widest">Athlete</span>
+                            <span class="text-[9px] text-slate-500">Just now</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">${text}</p>
+                    </div>
+                `;
+                commentList.appendChild(commentDiv);
+                commentInput.value = '';
+                commentList.scrollTop = commentList.scrollHeight;
+                
+                try {
+                    await supabase
+                        .from('sports_feed')
+                        .update({ comments: updatedComments })
+                        .eq('id', post.id);
+                } catch (error) {
+                    console.error('Error adding comment:', error);
+                    // Revert optimistic update
+                    commentList.removeChild(commentList.lastChild);
+                    if (commentCountEl) {
+                        commentCountEl.textContent = (post.comments?.length || 0).toString();
                     }
-                });
-
-                elements.feed.appendChild(tpl);
+                    showNotification('Error', 'Failed to post comment', 'error');
+                }
+            };
+            
+            commentSubmit.addEventListener('click', submitComment);
+            commentInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    submitComment();
+                }
             });
         }
 
@@ -726,141 +1019,252 @@
                 showNotification('Access Denied', 'Only admins can create posts', 'error');
                 return;
             }
-
-            const title = elements.postTitle.value.trim();
-            const content = elements.postContent.value.trim();
-            const tag = elements.postTag.value.trim();
-            const image_url = elements.postImage.value.trim();
-
-            if (!title || !content) {
-                showNotification('Missing info', 'Please fill in title and content', 'error');
+            
+            const title = DOM.inputs.postTitle?.value.trim() || '';
+            const content = DOM.inputs.postContent?.value.trim() || '';
+            const tag = DOM.inputs.postTag?.value.trim() || '';
+            const imageUrl = DOM.inputs.postImage?.value.trim() || '';
+            
+            // Validation
+            if (!title || title.length > 100) {
+                showNotification('Invalid Title', 'Title must be 1-100 characters', 'error');
                 return;
             }
-
-            elements.publishBtn.disabled = true;
-            const originalText = elements.publishBtn.textContent;
-            elements.publishBtn.textContent = 'Publishing...';
-
+            
+            if (!content || content.length > 500) {
+                showNotification('Invalid Content', 'Content must be 1-500 characters', 'error');
+                return;
+            }
+            
+            const originalText = DOM.publishBtn?.textContent || '';
+            DOM.publishBtn.disabled = true;
+            DOM.publishBtn.textContent = 'Broadcasting...';
+            
             try {
                 const { error } = await supabase.from('sports_feed').insert([{
                     title,
                     content,
                     tag: tag || 'General',
-                    image_url: image_url || null,
-                    author_id: user.id,
+                    image_url: imageUrl || null,
+                    author_id: AppState.user.id,
                     likes: [],
                     comments: []
                 }]);
-
+                
                 if (error) throw error;
-
+                
                 showNotification('Published!', 'Your post is now live', 'success');
-                elements.postTitle.value = '';
-                elements.postContent.value = '';
-                elements.postTag.value = '';
-                elements.postImage.value = '';
-                elements.composer.classList.add('hidden');
-
+                
+                // Clear form
+                DOM.inputs.postTitle.value = '';
+                DOM.inputs.postContent.value = '';
+                DOM.inputs.postTag.value = '';
+                DOM.inputs.postImage.value = '';
+                DOM.composer?.classList.add('hidden');
+                
+                // Update counters
+                if (DOM.titleCounter) DOM.titleCounter.textContent = '0/100';
+                if (DOM.contentCounter) DOM.contentCounter.textContent = '0/500';
+                
                 // Refresh feed
+                AppState.currentPage = 1;
                 await fetchFeed();
             } catch (error) {
                 console.error('Error publishing post:', error);
                 showNotification('Error', 'Failed to publish post', 'error');
             } finally {
-                elements.publishBtn.disabled = false;
-                elements.publishBtn.textContent = originalText;
+                DOM.publishBtn.disabled = false;
+                DOM.publishBtn.textContent = originalText;
             }
         }
 
-        // ==================== EVENT LISTENERS ====================
-        // Auth toggle
-        elements.authToggle.addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            elements.authTitle.innerHTML = isLoginMode 
-                ? 'Welcome <span class="text-rose-600">Back</span>' 
-                : 'Join the <span class="text-rose-600">Era</span>';
-            elements.authSubtitle.textContent = isLoginMode 
-                ? 'Sign in to your athlete profile.' 
-                : 'Sign up to react and comment on feeds.';
-            elements.authBtn.textContent = isLoginMode ? 'Sign In' : 'Create Account';
-            elements.authToggle.textContent = isLoginMode 
-                ? "Don't have an account? Sign Up" 
-                : 'Already have an account? Sign In';
-            elements.authError.classList.add('hidden');
-        });
+        // ============================================
+        // EVENT LISTENERS SETUP
+        // ============================================
 
-        // Auth button
-        elements.authBtn.addEventListener('click', handleAuth);
-
-        // Enter key for auth
-        elements.password.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleAuth();
-        });
-
-        // Login trigger
-        elements.loginTrigger.addEventListener('click', () => {
-            elements.authModal.classList.remove('hidden');
-            elements.email.focus();
-        });
-
-        // Close auth modal
-        document.getElementById('close-auth').addEventListener('click', () => {
-            elements.authModal.classList.add('hidden');
-        });
-
-        // Logout
-        elements.logoutBtn.addEventListener('click', handleLogout);
-
-        // Admin toggle
-        elements.adminToggle.addEventListener('click', () => {
-            if (!isAdmin()) {
-                showNotification('Access Denied', 'Only admins can create posts', 'error');
-                return;
-            }
-            elements.composer.classList.toggle('hidden');
-            if (!elements.composer.classList.contains('hidden')) {
-                elements.postTitle.focus();
-            }
-        });
-
-        // Cancel post
-        elements.cancelPost.addEventListener('click', () => {
-            elements.composer.classList.add('hidden');
-            elements.postTitle.value = '';
-            elements.postContent.value = '';
-            elements.postTag.value = '';
-            elements.postImage.value = '';
-        });
-
-        // Publish post
-        elements.publishBtn.addEventListener('click', createPost);
-
-        // Enter key for post creation
-        elements.postContent.addEventListener('keypress', (e) => {
-            if (e.ctrlKey && e.key === 'Enter') {
+        function initEventListeners() {
+            // Auth toggle
+            DOM.authToggle?.addEventListener('click', () => {
+                AppState.isLoginMode = !AppState.isLoginMode;
+                
+                if (DOM.authTitle) {
+                    DOM.authTitle.innerHTML = AppState.isLoginMode 
+                        ? 'Welcome <span class="text-rose-600">Back</span>' 
+                        : 'Join the <span class="text-rose-600">Era</span>';
+                }
+                
+                if (DOM.authSubtitle) {
+                    DOM.authSubtitle.textContent = AppState.isLoginMode 
+                        ? 'Sign in to your athlete profile.' 
+                        : 'Sign up to react and comment on feeds.';
+                }
+                
+                if (DOM.authBtn) {
+                    DOM.authBtn.textContent = AppState.isLoginMode ? 'Sign In' : 'Create Account';
+                }
+                
+                if (DOM.authToggle) {
+                    DOM.authToggle.textContent = AppState.isLoginMode 
+                        ? "Don't have an account? Sign Up" 
+                        : 'Already have an account? Sign In';
+                }
+                
+                DOM.emailError?.classList.add('hidden');
+                DOM.passwordError?.classList.add('hidden');
+                DOM.authError?.classList.add('hidden');
+            });
+            
+            // Auth form submission
+            DOM.authForm?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleAuth();
+            });
+            
+            // Login trigger
+            DOM.loginTrigger?.addEventListener('click', () => {
+                DOM.authModal?.classList.remove('hidden');
+                DOM.inputs.email?.focus();
+            });
+            
+            // Close auth modal
+            document.getElementById('close-auth')?.addEventListener('click', () => {
+                DOM.authModal?.classList.add('hidden');
+            });
+            
+            // Logout
+            DOM.logoutBtn?.addEventListener('click', handleLogout);
+            
+            // Admin toggle
+            DOM.adminToggle?.addEventListener('click', () => {
+                if (!isAdmin()) {
+                    showNotification('Access Denied', 'Only admins can create posts', 'error');
+                    return;
+                }
+                DOM.composer?.classList.toggle('hidden');
+                if (!DOM.composer?.classList.contains('hidden')) {
+                    DOM.inputs.postTitle?.focus();
+                }
+            });
+            
+            // Cancel post
+            DOM.cancelPost?.addEventListener('click', () => {
+                DOM.composer?.classList.add('hidden');
+                DOM.inputs.postTitle.value = '';
+                DOM.inputs.postContent.value = '';
+                DOM.inputs.postTag.value = '';
+                DOM.inputs.postImage.value = '';
+                
+                if (DOM.titleCounter) DOM.titleCounter.textContent = '0/100';
+                if (DOM.contentCounter) DOM.contentCounter.textContent = '0/500';
+            });
+            
+            // Publish post
+            DOM.publishBtn?.addEventListener('click', createPost);
+            
+            // Post form submission
+            DOM.postForm?.addEventListener('submit', (e) => {
+                e.preventDefault();
                 createPost();
+            });
+            
+            // Character counters
+            DOM.inputs.postTitle?.addEventListener('input', () => {
+                if (DOM.titleCounter) {
+                    const length = DOM.inputs.postTitle.value.length;
+                    DOM.titleCounter.textContent = `${length}/100`;
+                    DOM.titleCounter.className = `text-xs ${length > 100 ? 'text-rose-400' : 'text-slate-500'} mt-1 text-right`;
+                }
+            });
+            
+            DOM.inputs.postContent?.addEventListener('input', () => {
+                if (DOM.contentCounter) {
+                    const length = DOM.inputs.postContent.value.length;
+                    DOM.contentCounter.textContent = `${length}/500`;
+                    DOM.contentCounter.className = `text-xs ${length > 500 ? 'text-rose-400' : 'text-slate-500'} mt-1 text-right`;
+                }
+            });
+            
+            // Load more posts
+            DOM.loadMoreBtn?.addEventListener('click', () => {
+                AppState.currentPage++;
+                fetchFeed();
+            });
+            
+            // Escape key to close modals
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (!DOM.authModal?.classList.contains('hidden')) {
+                        DOM.authModal?.classList.add('hidden');
+                    }
+                    if (!DOM.composer?.classList.contains('hidden')) {
+                        DOM.composer?.classList.add('hidden');
+                    }
+                }
+            });
+            
+            // Click outside to close auth modal
+            DOM.authModal?.addEventListener('click', (e) => {
+                if (e.target === DOM.authModal) {
+                    DOM.authModal.classList.add('hidden');
+                }
+            });
+        }
+
+        // ============================================
+        // REAL-TIME UPDATES
+        // ============================================
+
+        function setupRealtime() {
+            try {
+                supabase
+                    .channel('arena-live')
+                    .on('postgres_changes', 
+                        { event: '*', schema: 'public', table: 'sports_feed' }, 
+                        () => {
+                            AppState.currentPage = 1;
+                            fetchFeed();
+                        }
+                    )
+                    .subscribe();
+            } catch (error) {
+                console.error('Realtime setup failed:', error);
             }
-        });
+        }
 
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Check if user is already logged in
-            await checkUser();
-            
-            // Load feed
-            await fetchFeed();
-            
-            // Set up real-time updates
-            supabase
-                .channel('arena-live')
-                .on('postgres_changes', 
-                    { event: '*', schema: 'public', table: 'sports_feed' }, 
-                    () => fetchFeed()
-                )
-                .subscribe();
+        // ============================================
+        // INITIALIZATION
+        // ============================================
 
-            console.log('SportEra initialized');
-        });
+        async function init() {
+            try {
+                // Set up event listeners
+                initEventListeners();
+                
+                // Check authentication
+                await checkUser();
+                
+                // Load initial feed
+                await fetchFeed();
+                
+                // Set up real-time updates
+                setupRealtime();
+                
+                console.log('SportEra initialized successfully');
+            } catch (error) {
+                console.error('Initialization failed:', error);
+                showNotification('Error', 'Failed to load application', 'error');
+            }
+        }
+
+        // Start the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <!-- Environment Configuration -->
+    <script>
+        window.env = {
+            NODE_ENV: 'development'
+        };
     </script>
 </body>
 </html>
