@@ -354,31 +354,6 @@
             transform: translateX(0);
         }
 
-        /* Image Placeholder Enhancement */
-        .image-placeholder {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .image-placeholder::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                45deg,
-                transparent 30%,
-                rgba(255, 255, 255, 0.05) 50%,
-                transparent 70%
-            );
-            animation: shimmer 2s infinite;
-        }
-
         /* Like Animation Enhancement */
         .like-animation {
             animation: likePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -474,14 +449,6 @@
             }
         }
 
-        /* Dark Mode Enhancement */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --card-bg: rgba(15, 23, 42, 0.9);
-                --glass-bg: rgba(15, 23, 42, 0.85);
-            }
-        }
-
         /* Loading Spinner Enhancement */
         .loading-spinner {
             border: 3px solid rgba(15, 23, 42, 0.3);
@@ -541,6 +508,128 @@
         /* Smooth Scrolling */
         html {
             scroll-behavior: smooth;
+        }
+
+        /* Form Validation Styles */
+        .input-error {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+        }
+
+        /* Success State */
+        .input-success {
+            border-color: var(--success) !important;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+        }
+
+        /* Warning State */
+        .input-warning {
+            border-color: var(--warning) !important;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15) !important;
+        }
+
+        /* Pulse Animation for New Content */
+        @keyframes newContentPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); }
+        }
+
+        .new-content {
+            animation: newContentPulse 2s ease-in-out;
+        }
+
+        /* Image Loading Enhancement */
+        .img-loading {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: loading 2s infinite;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 3px;
+            background: var(--primary-gradient);
+            width: 0%;
+            transition: width 0.3s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .typing-indicator span {
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Badge Styles */
+        .badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .badge-athlete {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-8px);
         }
     </style>
 </head>
@@ -626,7 +715,7 @@
                 <div id="user-profile" class="hidden items-center gap-3">
                     <div class="flex flex-col items-end hidden sm:flex">
                         <span id="display-email" class="text-xs font-bold text-slate-200 truncate max-w-[120px]"></span>
-                        <span id="user-role" class="text-[10px] text-rose-500 font-bold uppercase tracking-widest">Athlete</span>
+                        <span id="user-role" class="text-[10px] font-bold uppercase tracking-widest badge"></span>
                     </div>
                     <button id="logout-btn" class="w-10 h-10 bg-slate-800 hover:bg-rose-600 rounded-xl flex items-center justify-center transition-all duration-300 group focus-visible hover-lift" aria-label="Log out">
                         <i class="fas fa-sign-out-alt group-hover:rotate-90 transition-transform"></i>
@@ -715,19 +804,19 @@
                 <p class="post-content text-slate-400 text-sm leading-relaxed mb-6"></p>
 
                 <div class="post-img-container hidden rounded-[1.5rem] overflow-hidden border border-white/5 mb-6 bg-slate-900">
-                    <img data-src="" class="post-img w-full h-auto object-cover max-h-96 transition-opacity duration-300 opacity-0" alt="news image" loading="lazy">
+                    <img data-src="" class="post-img w-full h-auto object-cover max-h-96 transition-opacity duration-300 opacity-0 img-loading" alt="news image" loading="lazy">
                 </div>
 
                 <div class="flex items-center gap-8 pt-2 border-t border-white/5">
-                    <button class="like-btn flex items-center gap-2 text-slate-400 hover:text-rose-500 transition-colors font-bold group focus-visible hover-lift" aria-label="Like post">
+                    <button class="like-btn flex items-center gap-2 text-slate-400 hover:text-rose-500 transition-colors font-bold group focus-visible hover-lift tooltip" data-tooltip="Like this post" aria-label="Like post">
                         <i class="far fa-heart text-xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
                         <span class="like-count text-xs">0</span>
                     </button>
-                    <button class="comment-toggle flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors font-bold group focus-visible hover-lift" aria-label="Toggle comments">
+                    <button class="comment-toggle flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors font-bold group focus-visible hover-lift tooltip" data-tooltip="View comments" aria-label="Toggle comments">
                         <i class="far fa-comment text-xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
                         <span class="comment-count text-xs">0</span>
                     </button>
-                    <button class="share-btn flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors font-bold group ml-auto focus-visible hover-lift" aria-label="Share post">
+                    <button class="share-btn flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors font-bold group ml-auto focus-visible hover-lift tooltip" data-tooltip="Share post" aria-label="Share post">
                         <i class="fas fa-share-alt text-lg group-hover:scale-110 transition-transform" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -914,11 +1003,11 @@
                 if (DOM.userRole) {
                     if (isAdmin()) {
                         DOM.userRole.textContent = 'Admin';
-                        DOM.userRole.className = 'text-[10px] text-emerald-500 font-bold uppercase tracking-widest';
+                        DOM.userRole.className = 'badge badge-admin';
                         DOM.adminToggle?.classList.remove('hidden');
                     } else {
                         DOM.userRole.textContent = 'Athlete';
-                        DOM.userRole.className = 'text-[10px] text-rose-500 font-bold uppercase tracking-widest';
+                        DOM.userRole.className = 'badge badge-athlete';
                         DOM.adminToggle?.classList.add('hidden');
                         DOM.composer?.classList.add('hidden');
                     }
@@ -944,12 +1033,14 @@
             if (!email || !/\S+@\S+\.\S+/.test(email)) {
                 DOM.emailError.textContent = 'Please enter a valid email';
                 DOM.emailError.classList.remove('hidden');
+                DOM.inputs.email.classList.add('input-error');
                 return;
             }
             
             if (!password || password.length < 6) {
                 DOM.passwordError.textContent = 'Password must be at least 6 characters';
                 DOM.passwordError.classList.remove('hidden');
+                DOM.inputs.password.classList.add('input-error');
                 return;
             }
             
@@ -972,6 +1063,8 @@
                         updateUI();
                         DOM.inputs.email.value = '';
                         DOM.inputs.password.value = '';
+                        DOM.inputs.email.classList.remove('input-error');
+                        DOM.inputs.password.classList.remove('input-error');
                         showNotification('Welcome back!', 'Successfully signed in', 'success');
                     }
                 } else {
@@ -988,6 +1081,8 @@
                         updateUI();
                         DOM.inputs.email.value = '';
                         DOM.inputs.password.value = '';
+                        DOM.inputs.email.classList.remove('input-error');
+                        DOM.inputs.password.classList.remove('input-error');
                         showNotification('Welcome to SportEra!', 'Your account has been created.', 'success');
                     }
                 }
@@ -1065,7 +1160,11 @@
             
             DOM.noPosts?.classList.add('hidden');
             
-            AppState.posts.slice((AppState.currentPage - 1) * AppState.postsPerPage).forEach((post, index) => {
+            const postsToRender = AppState.currentPage === 1 
+                ? AppState.posts 
+                : AppState.posts.slice((AppState.currentPage - 1) * AppState.postsPerPage);
+            
+            postsToRender.forEach((post) => {
                 const tpl = document.getElementById('post-tpl')?.content.cloneNode(true);
                 if (!tpl) return;
                 
@@ -1076,6 +1175,7 @@
                 const timeEl = tpl.querySelector('.post-time');
                 const likeCountEl = tpl.querySelector('.like-count');
                 const commentCountEl = tpl.querySelector('.comment-count');
+                const articleEl = tpl.querySelector('article');
                 
                 if (titleEl) titleEl.textContent = post.title || '';
                 if (contentEl) contentEl.textContent = post.content || '';
@@ -1085,6 +1185,9 @@
                 if (timeEl) {
                     timeEl.textContent = formatTime(post.created_at);
                     timeEl.setAttribute('datetime', post.created_at);
+                }
+                if (articleEl) {
+                    articleEl.dataset.postId = post.id;
                 }
                 
                 // Handle image
@@ -1097,6 +1200,7 @@
                         img.src = post.image_url;
                         img.onload = () => {
                             img.classList.remove('opacity-0');
+                            img.classList.remove('img-loading');
                             img.classList.add('opacity-100');
                         };
                         img.onerror = () => {
@@ -1319,13 +1423,19 @@
             
             // Validation
             if (!title || title.length > 100) {
+                DOM.inputs.postTitle.classList.add('input-error');
                 showNotification('Invalid Title', 'Title must be 1-100 characters', 'error');
                 return;
+            } else {
+                DOM.inputs.postTitle.classList.remove('input-error');
             }
             
             if (!content || content.length > 500) {
+                DOM.inputs.postContent.classList.add('input-error');
                 showNotification('Invalid Content', 'Content must be 1-500 characters', 'error');
                 return;
+            } else {
+                DOM.inputs.postContent.classList.remove('input-error');
             }
             
             const originalText = DOM.publishBtn?.textContent || '';
@@ -1500,6 +1610,25 @@
                     DOM.authModal.classList.add('hidden');
                 }
             });
+            
+            // Input validation listeners
+            DOM.inputs.email?.addEventListener('input', () => {
+                DOM.inputs.email.classList.remove('input-error');
+                DOM.emailError?.classList.add('hidden');
+            });
+            
+            DOM.inputs.password?.addEventListener('input', () => {
+                DOM.inputs.password.classList.remove('input-error');
+                DOM.passwordError?.classList.add('hidden');
+            });
+            
+            DOM.inputs.postTitle?.addEventListener('input', () => {
+                DOM.inputs.postTitle.classList.remove('input-error');
+            });
+            
+            DOM.inputs.postContent?.addEventListener('input', () => {
+                DOM.inputs.postContent.classList.remove('input-error');
+            });
         }
 
         // ============================================
@@ -1512,7 +1641,8 @@
                     .channel('arena-live')
                     .on('postgres_changes', 
                         { event: '*', schema: 'public', table: 'sports_feed' }, 
-                        () => {
+                        (payload) => {
+                            console.log('Realtime update:', payload);
                             AppState.currentPage = 1;
                             fetchFeed();
                         }
@@ -1529,9 +1659,12 @@
 
         async function init() {
             try {
+                console.log('Initializing SportEra...');
+                
                 // Initialize Supabase
-                if (window.supabase) {
+                if (window.supabase && window.supabase.createClient) {
                     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('Supabase initialized successfully');
                 } else {
                     console.error('Supabase library not loaded');
                     showNotification('Error', 'Failed to initialize application', 'error');
@@ -1558,14 +1691,11 @@
         }
 
         // Start the application
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
-
-    <!-- Environment Configuration -->
-    <script>
-        window.env = {
-            NODE_ENV: 'development'
-        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
     </script>
 </body>
 </html>
