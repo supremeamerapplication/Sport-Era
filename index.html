@@ -528,58 +528,6 @@
             box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15) !important;
         }
 
-        /* Pulse Animation for New Content */
-        @keyframes newContentPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
-            50% { box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); }
-        }
-
-        .new-content {
-            animation: newContentPulse 2s ease-in-out;
-        }
-
-        /* Image Loading Enhancement */
-        .img-loading {
-            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
-            background-size: 200% 100%;
-            animation: loading 2s infinite;
-        }
-
-        /* Progress Bar */
-        .progress-bar {
-            height: 3px;
-            background: var(--primary-gradient);
-            width: 0%;
-            transition: width 0.3s ease;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        /* Typing Indicator */
-        .typing-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .typing-indicator span {
-            width: 4px;
-            height: 4px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-
-        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typing {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
         /* Badge Styles */
         .badge {
             padding: 2px 8px;
@@ -804,7 +752,7 @@
                 <p class="post-content text-slate-400 text-sm leading-relaxed mb-6"></p>
 
                 <div class="post-img-container hidden rounded-[1.5rem] overflow-hidden border border-white/5 mb-6 bg-slate-900">
-                    <img data-src="" class="post-img w-full h-auto object-cover max-h-96 transition-opacity duration-300 opacity-0 img-loading" alt="news image" loading="lazy">
+                    <img data-src="" class="post-img w-full h-auto object-cover max-h-96 transition-opacity duration-300 opacity-0" alt="news image" loading="lazy">
                 </div>
 
                 <div class="flex items-center gap-8 pt-2 border-t border-white/5">
@@ -970,7 +918,7 @@
         }
 
         // ============================================
-        // AUTHENTICATION FUNCTIONS
+        // AUTHENTICATION FUNCTIONS - FIXED
         // ============================================
 
         async function checkUser() {
@@ -985,6 +933,7 @@
                 }
             } catch (error) {
                 console.error('Error checking user:', error);
+                showNotification('Error', 'Failed to check authentication', 'error');
             } finally {
                 setLoading(false);
             }
@@ -1026,74 +975,107 @@
             const email = DOM.inputs.email?.value.trim() || '';
             const password = DOM.inputs.password?.value || '';
             
-            // Validation
+            // Clear previous errors
             DOM.emailError?.classList.add('hidden');
             DOM.passwordError?.classList.add('hidden');
+            DOM.authError?.classList.add('hidden');
             
+            // Validation
             if (!email || !/\S+@\S+\.\S+/.test(email)) {
-                DOM.emailError.textContent = 'Please enter a valid email';
+                DOM.emailError.textContent = 'Please enter a valid email address';
                 DOM.emailError.classList.remove('hidden');
                 DOM.inputs.email.classList.add('input-error');
+                DOM.inputs.email.focus();
                 return;
+            } else {
+                DOM.inputs.email.classList.remove('input-error');
             }
             
             if (!password || password.length < 6) {
                 DOM.passwordError.textContent = 'Password must be at least 6 characters';
                 DOM.passwordError.classList.remove('hidden');
                 DOM.inputs.password.classList.add('input-error');
+                DOM.inputs.password.focus();
                 return;
+            } else {
+                DOM.inputs.password.classList.remove('input-error');
             }
             
+            const originalText = DOM.authBtn.textContent;
             DOM.authBtn.disabled = true;
             DOM.authBtn.textContent = 'Processing...';
-            DOM.authError?.classList.add('hidden');
             
             try {
+                let result;
+                
                 if (AppState.isLoginMode) {
                     // Sign in
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password
+                    console.log('Attempting sign in with:', email);
+                    result = await supabase.auth.signInWithPassword({
+                        email: email,
+                        password: password
                     });
-                    
-                    if (error) throw error;
-                    
-                    if (data.user) {
-                        AppState.user = data.user;
-                        updateUI();
-                        DOM.inputs.email.value = '';
-                        DOM.inputs.password.value = '';
-                        DOM.inputs.email.classList.remove('input-error');
-                        DOM.inputs.password.classList.remove('input-error');
-                        showNotification('Welcome back!', 'Successfully signed in', 'success');
-                    }
                 } else {
                     // Sign up
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password
+                    console.log('Attempting sign up with:', email);
+                    result = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            emailRedirectTo: window.location.origin
+                        }
                     });
-                    
-                    if (error) throw error;
-                    
-                    if (data.user) {
-                        AppState.user = data.user;
-                        updateUI();
-                        DOM.inputs.email.value = '';
-                        DOM.inputs.password.value = '';
-                        DOM.inputs.email.classList.remove('input-error');
-                        DOM.inputs.password.classList.remove('input-error');
-                        showNotification('Welcome to SportEra!', 'Your account has been created.', 'success');
-                    }
                 }
+                
+                console.log('Auth result:', result);
+                
+                const { data, error } = result;
+                
+                if (error) {
+                    throw error;
+                }
+                
+                if (data?.user) {
+                    AppState.user = data.user;
+                    updateUI();
+                    
+                    // Clear form
+                    DOM.inputs.email.value = '';
+                    DOM.inputs.password.value = '';
+                    
+                    if (AppState.isLoginMode) {
+                        showNotification('Welcome back!', 'Successfully signed in', 'success');
+                    } else {
+                        showNotification('Welcome to SportEra!', 'Account created successfully!', 'success');
+                    }
+                    
+                    // Close modal
+                    DOM.authModal?.classList.add('hidden');
+                } else {
+                    throw new Error('Authentication failed: No user data returned');
+                }
+                
             } catch (error) {
-                console.error('Auth error:', error);
-                DOM.authError.textContent = error.message || 'Authentication failed';
+                console.error('Auth error details:', error);
+                
+                let errorMessage = 'Authentication failed';
+                
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMessage = 'Invalid email or password';
+                } else if (error.message.includes('User already registered')) {
+                    errorMessage = 'Email already registered. Try signing in instead.';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage = 'Please check your email to confirm your account';
+                } else {
+                    errorMessage = error.message || 'Authentication failed';
+                }
+                
+                DOM.authError.textContent = errorMessage;
                 DOM.authError.classList.remove('hidden');
-                showNotification('Error', error.message || 'Authentication failed', 'error');
+                showNotification('Authentication Error', errorMessage, 'error');
             } finally {
                 DOM.authBtn.disabled = false;
-                DOM.authBtn.textContent = AppState.isLoginMode ? 'Sign In' : 'Create Account';
+                DOM.authBtn.textContent = originalText;
             }
         }
 
@@ -1200,7 +1182,6 @@
                         img.src = post.image_url;
                         img.onload = () => {
                             img.classList.remove('opacity-0');
-                            img.classList.remove('img-loading');
                             img.classList.add('opacity-100');
                         };
                         img.onerror = () => {
@@ -1511,9 +1492,12 @@
                         : 'Already have an account? Sign In';
                 }
                 
+                // Clear errors
                 DOM.emailError?.classList.add('hidden');
                 DOM.passwordError?.classList.add('hidden');
                 DOM.authError?.classList.add('hidden');
+                DOM.inputs.email?.classList.remove('input-error');
+                DOM.inputs.password?.classList.remove('input-error');
             });
             
             // Auth form submission
@@ -1525,6 +1509,22 @@
             // Login trigger
             DOM.loginTrigger?.addEventListener('click', () => {
                 DOM.authModal?.classList.remove('hidden');
+                AppState.isLoginMode = false;
+                
+                // Update UI to sign up mode
+                if (DOM.authTitle) {
+                    DOM.authTitle.innerHTML = 'Join the <span class="gradient-text">Era</span>';
+                }
+                if (DOM.authSubtitle) {
+                    DOM.authSubtitle.textContent = 'Sign up to react and comment on feeds.';
+                }
+                if (DOM.authBtn) {
+                    DOM.authBtn.textContent = 'Create Account';
+                }
+                if (DOM.authToggle) {
+                    DOM.authToggle.textContent = 'Already have an account? Sign In';
+                }
+                
                 DOM.inputs.email?.focus();
             });
             
@@ -1615,11 +1615,13 @@
             DOM.inputs.email?.addEventListener('input', () => {
                 DOM.inputs.email.classList.remove('input-error');
                 DOM.emailError?.classList.add('hidden');
+                DOM.authError?.classList.add('hidden');
             });
             
             DOM.inputs.password?.addEventListener('input', () => {
                 DOM.inputs.password.classList.remove('input-error');
                 DOM.passwordError?.classList.add('hidden');
+                DOM.authError?.classList.add('hidden');
             });
             
             DOM.inputs.postTitle?.addEventListener('input', () => {
@@ -1684,6 +1686,19 @@
                 setupRealtime();
                 
                 console.log('SportEra initialized successfully');
+                
+                // Set up auth state change listener
+                supabase.auth.onAuthStateChange((event, session) => {
+                    console.log('Auth state changed:', event, session);
+                    if (event === 'SIGNED_IN' && session) {
+                        AppState.user = session.user;
+                        updateUI();
+                    } else if (event === 'SIGNED_OUT') {
+                        AppState.user = null;
+                        updateUI();
+                    }
+                });
+                
             } catch (error) {
                 console.error('Initialization failed:', error);
                 showNotification('Error', 'Failed to load application', 'error');
