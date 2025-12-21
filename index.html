@@ -5,26 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sport Era | Professional Arena</title>
     
-    <!-- Security Headers -->
+    <!-- Simplified Security Headers for easier debugging -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self' https:;
         script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://*.supabase.co 'unsafe-inline' 'unsafe-eval';
         style-src 'self' https: 'unsafe-inline';
         img-src 'self' https: data:;
         font-src 'self' https:;
-        connect-src 'self' https://*.supabase.co;
+        connect-src 'self' https://*.supabase.co wss://*.supabase.co;
     ">
-    
-    <!-- Performance Optimizations -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap">
     
     <!-- External Resources -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
     <!-- Enhanced CSS -->
     <style>
@@ -40,7 +34,6 @@
             --danger: #ef4444;
             --primary-gradient: linear-gradient(135deg, #f43f5e, #8b5cf6);
             --glass-bg: rgba(15, 23, 42, 0.7);
-            --neon-glow: 0 0 20px rgba(244, 63, 94, 0.3);
         }
 
         * {
@@ -52,204 +45,49 @@
         body { 
             font-family: 'Outfit', sans-serif; 
             background: var(--bg-deep);
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(244, 63, 94, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
             color: #f1f5f9;
             overflow-x: hidden;
             min-height: 100vh;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 2px,
-                    rgba(255, 255, 255, 0.02) 2px,
-                    rgba(255, 255, 255, 0.02) 4px
-                );
-            pointer-events: none;
-            z-index: 1;
         }
 
         .glass-nav {
             background: rgba(2, 6, 23, 0.95);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 
-                0 4px 30px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
         }
 
         .sport-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.07);
             border-radius: 2rem;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            will-change: transform, border-color, box-shadow;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .sport-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                135deg,
-                rgba(244, 63, 94, 0.1),
-                transparent 30%,
-                transparent 70%,
-                rgba(139, 92, 246, 0.1)
-            );
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
+            transition: all 0.4s ease;
         }
 
         .sport-card:hover {
             border-color: rgba(244, 63, 94, 0.4);
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.4),
-                var(--neon-glow);
-        }
-
-        .sport-card:hover::before {
-            opacity: 1;
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         .btn-action {
-            background: var(--primary-gradient);
-            background-size: 200% 200%;
-            color: white;
-            border: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            transition: all 0.3s;
             font-weight: 800;
             letter-spacing: 0.05em;
-            position: relative;
-            overflow: hidden;
-            isolation: isolate;
-        }
-
-        .btn-action::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s;
-            z-index: -1;
         }
 
         .btn-action:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 
-                0 15px 30px rgba(244, 63, 94, 0.4),
-                0 0 30px rgba(244, 63, 94, 0.2);
-            background-position: right center;
-        }
-
-        .btn-action:hover:not(:disabled)::before {
-            left: 100%;
-        }
-
-        .btn-action:active:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(244, 63, 94, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4);
         }
 
         .btn-action:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
         }
 
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        .focus-visible:focus {
-            outline: 2px solid var(--accent);
-            outline-offset: 3px;
-            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.1);
-        }
-
-        /* Scrollbar Enhancement */
-        .custom-scrollbar {
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent) rgba(15, 23, 42, 0.5);
-        }
-
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 10px;
-            margin: 4px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: var(--primary-gradient);
-            border-radius: 10px;
-            border: 2px solid rgba(15, 23, 42, 0.5);
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, var(--accent-hover), #7c3aed);
-        }
-
-        /* Form Elements Enhancement */
-        input, textarea, select {
-            background: rgba(30, 41, 59, 0.7) !important;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(51, 65, 85, 0.5) !important;
-            color: white !important;
-            outline: none;
-            transition: all 0.3s;
-            border-radius: 0.75rem;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            border-color: var(--accent) !important;
-            box-shadow: 
-                0 0 0 3px rgba(244, 63, 94, 0.15),
-                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-            background: rgba(30, 41, 59, 0.9) !important;
-        }
-
-        /* Loading States Enhancement */
+        /* Loading States */
         .shimmer {
             background: linear-gradient(
                 90deg,
@@ -259,25 +97,6 @@
             );
             background-size: 200% 100%;
             animation: loading 2s infinite;
-            border-radius: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .shimmer::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-            animation: shimmer 2s infinite;
         }
 
         @keyframes loading {
@@ -285,116 +104,38 @@
             100% { background-position: -200% 0; }
         }
 
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Animations Enhancement */
-        @keyframes slideIn {
-            from { 
-                transform: translateY(20px); 
-                opacity: 0; 
-            }
-            to { 
-                transform: translateY(0); 
-                opacity: 1; 
-            }
-        }
-
-        @keyframes pulse-subtle {
-            0%, 100% { 
-                opacity: 1; 
-                transform: scale(1);
-            }
-            50% { 
-                opacity: 0.8; 
-                transform: scale(1.05);
-            }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .animate-slide-in {
-            animation: slideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        .pulse-subtle {
-            animation: pulse-subtle 2s infinite ease-in-out;
-        }
-
-        .float-animation {
-            animation: float 3s infinite ease-in-out;
-        }
-
-        /* Notification Enhancement */
         .notification {
             position: fixed;
             top: 100px;
             right: 20px;
             z-index: 10000;
             background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid rgba(244, 63, 94, 0.3);
             border-radius: 1rem;
             padding: 1rem 1.5rem;
             transform: translateX(120%);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.4s ease;
             max-width: 350px;
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.3),
-                var(--neon-glow);
         }
 
         .notification.show {
             transform: translateX(0);
         }
 
-        /* Like Animation Enhancement */
-        .like-animation {
-            animation: likePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        /* Form Elements */
+        input, textarea, select {
+            background: rgba(30, 41, 59, 0.7) !important;
+            border: 1px solid rgba(51, 65, 85, 0.5) !important;
+            color: white !important;
+            outline: none;
+            transition: all 0.3s;
         }
 
-        @keyframes likePop {
-            0% { 
-                transform: scale(1) rotate(0deg); 
-            }
-            50% { 
-                transform: scale(1.5) rotate(10deg); 
-            }
-            100% { 
-                transform: scale(1) rotate(0deg); 
-            }
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15);
         }
 
-        /* Fade In Enhancement */
-        .fade-in {
-            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        @keyframes fadeIn {
-            from { 
-                opacity: 0; 
-                transform: translateY(10px);
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0);
-            }
-        }
-
-        /* Modal Enhancement */
-        .modal-overlay {
-            background: rgba(2, 6, 23, 0.95);
-            backdrop-filter: blur(30px) saturate(200%);
-            -webkit-backdrop-filter: blur(30px) saturate(200%);
-        }
-
-        /* Gradient Text */
         .gradient-text {
             background: var(--primary-gradient);
             -webkit-background-clip: text;
@@ -402,54 +143,7 @@
             background-clip: text;
         }
 
-        /* Mobile Optimizations Enhancement */
-        @media (max-width: 640px) {
-            .sport-card {
-                border-radius: 1.5rem;
-                margin: 0 -0.5rem;
-            }
-            
-            .glass-nav {
-                backdrop-filter: blur(15px) saturate(180%);
-                -webkit-backdrop-filter: blur(15px) saturate(180%);
-            }
-            
-            .notification {
-                left: 20px;
-                right: 20px;
-                max-width: none;
-                top: 80px;
-            }
-            
-            .btn-action:hover:not(:disabled) {
-                transform: translateY(-2px);
-            }
-        }
-
-        /* Tablet Optimizations */
-        @media (min-width: 641px) and (max-width: 1024px) {
-            .sport-card {
-                margin: 0 -0.75rem;
-            }
-        }
-
-        /* Reduced Motion */
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-            
-            .btn-action:hover:not(:disabled) {
-                transform: none;
-            }
-        }
-
-        /* Loading Spinner Enhancement */
+        /* Loading Spinner */
         .loading-spinner {
             border: 3px solid rgba(15, 23, 42, 0.3);
             border-radius: 50%;
@@ -464,124 +158,20 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Card Tag Enhancement */
-        .card-tag {
-            background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(139, 92, 246, 0.15));
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        /* Comment Section Enhancement */
-        .comment-drawer {
-            background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        /* Share Button Enhancement */
-        .share-btn:hover i {
-            animation: spin 0.5s ease-in-out;
-        }
-
-        /* Hover Effects Enhancement */
-        .hover-lift {
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Selection Color */
-        ::selection {
-            background: rgba(244, 63, 94, 0.3);
-            color: white;
-        }
-
-        /* Focus States Enhancement */
-        *:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-            border-radius: 0.25rem;
-        }
-
-        /* Smooth Scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Form Validation Styles */
-        .input-error {
-            border-color: var(--danger) !important;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
-        }
-
-        /* Success State */
-        .input-success {
-            border-color: var(--success) !important;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
-        }
-
-        /* Warning State */
-        .input-warning {
-            border-color: var(--warning) !important;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15) !important;
-        }
-
-        /* Badge Styles */
-        .badge {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .badge-admin {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-
-        .badge-athlete {
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            color: white;
-        }
-
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 1000;
-        }
-
-        .tooltip:hover::after {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(-8px);
+        /* Mobile Optimizations */
+        @media (max-width: 640px) {
+            .sport-card {
+                border-radius: 1.5rem;
+            }
+            .notification {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
         }
     </style>
 </head>
-<body class="custom-scrollbar">
+<body>
     <!-- Skip to Content -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[1000] focus:px-4 focus:py-2 focus:bg-rose-600 focus:text-white focus:rounded-lg">
         Skip to main content
@@ -601,23 +191,22 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-[9999] flex items-center justify-center hidden" aria-live="polite" aria-busy="true">
+    <div id="loading-overlay" class="fixed inset-0 bg-slate-950/90 z-[9999] flex items-center justify-center hidden" aria-live="polite" aria-busy="true">
         <div class="text-center">
             <div class="loading-spinner mb-4"></div>
             <p class="text-slate-400 font-semibold tracking-widest text-sm">LOADING ARENA</p>
-            <p class="text-xs text-slate-600 mt-2">Preparing your sports experience...</p>
         </div>
     </div>
 
     <!-- Auth Modal -->
-    <div id="auth-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4 modal-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
-        <div class="bg-slate-900/80 backdrop-blur-xl w-full max-w-md p-8 rounded-[2.5rem] border border-white/10 shadow-2xl relative animate-slide-in">
-            <button id="close-auth" class="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5 focus-visible" aria-label="Close authentication modal">
+    <div id="auth-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center p-4 bg-slate-950/95" role="dialog" aria-modal="true">
+        <div class="bg-slate-900 w-full max-w-md p-8 rounded-[2.5rem] border border-white/10 shadow-2xl relative">
+            <button id="close-auth" class="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors p-2 rounded-lg" aria-label="Close authentication modal">
                 <i class="fas fa-times text-lg"></i>
             </button>
 
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-rose-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-500 float-animation" aria-hidden="true">
+                <div class="w-16 h-16 bg-rose-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-500">
                     <i class="fas fa-trophy text-3xl"></i>
                 </div>
                 <h2 id="auth-title" class="text-3xl font-900 italic uppercase">Join the <span class="gradient-text">Era</span></h2>
@@ -627,19 +216,19 @@
             <form id="auth-form" class="space-y-4" novalidate>
                 <div class="space-y-1">
                     <label for="email" class="text-xs font-bold text-slate-500 uppercase ml-1">Email Address</label>
-                    <input type="email" id="email" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30 focus-visible" placeholder="athlete@sportera.com" required>
+                    <input type="email" id="email" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30" placeholder="athlete@sportera.com" required>
                     <div class="text-xs text-rose-400 hidden" id="email-error"></div>
                 </div>
                 <div class="space-y-1">
                     <label for="password" class="text-xs font-bold text-slate-500 uppercase ml-1">Password</label>
-                    <input type="password" id="password" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30 focus-visible" placeholder="••••••••" minlength="6" required>
+                    <input type="password" id="password" class="w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-rose-500/30" placeholder="••••••••" minlength="6" required>
                     <div class="text-xs text-rose-400 hidden" id="password-error"></div>
                 </div>
                 <div id="auth-error" class="text-rose-400 text-xs hidden text-center" role="alert"></div>
-                <button id="auth-action-btn" class="w-full py-4 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm mt-4 focus-visible">
+                <button id="auth-action-btn" class="w-full py-4 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm mt-4">
                     Create Account
                 </button>
-                <button type="button" id="toggle-auth-mode" class="w-full text-center text-xs text-slate-500 hover:text-rose-500 transition-colors focus-visible">
+                <button type="button" id="toggle-auth-mode" class="w-full text-center text-xs text-slate-500 hover:text-rose-500 transition-colors">
                     Already have an account? Sign In
                 </button>
             </form>
@@ -647,17 +236,17 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav animate-slide-in" aria-label="Main navigation">
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav" aria-label="Main navigation">
         <div class="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-3 hover-lift">
-                <div class="w-10 h-10 bg-gradient-to-br from-rose-600 to-pink-600 flex items-center justify-center rounded-xl rotate-3 shadow-lg shadow-rose-900/40 float-animation" aria-hidden="true">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-rose-600 to-pink-600 flex items-center justify-center rounded-xl rotate-3 shadow-lg shadow-rose-900/40">
                     <i class="fas fa-bolt text-white text-xl -rotate-3"></i>
                 </div>
                 <span class="text-2xl font-900 tracking-tighter uppercase italic">Sport<span class="gradient-text">Era</span></span>
             </div>
 
             <div class="flex items-center gap-4">
-                <button id="admin-toggle" class="hidden w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-600/10 hover:border-rose-600/30 transition-all duration-300 focus-visible hover-lift" aria-label="Create new post">
+                <button id="admin-toggle" class="hidden w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-600/10 hover:border-rose-600/30 transition-all duration-300" aria-label="Create new post">
                     <i class="fas fa-plus"></i>
                 </button>
                 <div id="user-profile" class="hidden items-center gap-3">
@@ -665,11 +254,11 @@
                         <span id="display-email" class="text-xs font-bold text-slate-200 truncate max-w-[120px]"></span>
                         <span id="user-role" class="text-[10px] font-bold uppercase tracking-widest badge"></span>
                     </div>
-                    <button id="logout-btn" class="w-10 h-10 bg-slate-800 hover:bg-rose-600 rounded-xl flex items-center justify-center transition-all duration-300 group focus-visible hover-lift" aria-label="Log out">
+                    <button id="logout-btn" class="w-10 h-10 bg-slate-800 hover:bg-rose-600 rounded-xl flex items-center justify-center transition-all duration-300 group" aria-label="Log out">
                         <i class="fas fa-sign-out-alt group-hover:rotate-90 transition-transform"></i>
                     </button>
                 </div>
-                <button id="login-trigger" class="px-6 py-2.5 btn-action rounded-xl text-sm font-bold uppercase tracking-tighter focus-visible hover-lift">
+                <button id="login-trigger" class="px-6 py-2.5 btn-action rounded-xl text-sm font-bold uppercase tracking-tighter">
                     Enter Arena
                 </button>
             </div>
@@ -679,29 +268,29 @@
     <!-- Main Content -->
     <main id="main-content" class="pt-28 pb-20 max-w-2xl mx-auto px-4" role="main">
         <!-- Broadcast Composer -->
-        <section id="composer" class="hidden mb-12 fade-in" aria-label="Create new post">
-            <div class="bg-gradient-to-br from-slate-900/50 to-slate-900/30 p-6 rounded-[2.5rem] border-2 border-dashed border-rose-600/30 backdrop-blur-xl">
+        <section id="composer" class="hidden mb-12" aria-label="Create new post">
+            <div class="bg-gradient-to-br from-slate-900/50 to-slate-900/30 p-6 rounded-[2.5rem] border-2 border-dashed border-rose-600/30">
                 <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                     <i class="fas fa-broadcast-tower text-rose-500"></i> Broadcast News
                 </h3>
                 <form id="post-form" class="space-y-4" novalidate>
                     <div>
-                        <input type="text" id="post-title" placeholder="Catchy Headline..." class="w-full px-4 py-3 rounded-2xl focus:ring-2 focus:ring-rose-500/30 focus-visible" required maxlength="100">
+                        <input type="text" id="post-title" placeholder="Catchy Headline..." class="w-full px-4 py-3 rounded-2xl focus:ring-2 focus:ring-rose-500/30" required maxlength="100">
                         <div class="text-xs text-slate-500 mt-1 text-right" id="title-counter">0/100</div>
                     </div>
                     <div>
-                        <textarea id="post-content" placeholder="Full story details..." rows="3" class="w-full px-4 py-3 rounded-2xl resize-none focus:ring-2 focus:ring-rose-500/30 focus-visible" required maxlength="500"></textarea>
+                        <textarea id="post-content" placeholder="Full story details..." rows="3" class="w-full px-4 py-3 rounded-2xl resize-none focus:ring-2 focus:ring-rose-500/30" required maxlength="500"></textarea>
                         <div class="text-xs text-slate-500 mt-1 text-right" id="content-counter">0/500</div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="post-tag" placeholder="Sport (e.g. NBA)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30 focus-visible" maxlength="20">
-                        <input type="url" id="post-image" placeholder="Image URL (optional)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30 focus-visible">
+                        <input type="text" id="post-tag" placeholder="Sport (e.g. NBA)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30" maxlength="20">
+                        <input type="url" id="post-image" placeholder="Image URL (optional)" class="px-4 py-2 rounded-xl text-sm focus:ring-2 focus:ring-rose-500/30">
                     </div>
                     <div class="flex gap-4">
-                        <button type="button" id="cancel-post" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-2xl font-bold transition-colors focus-visible hover-lift">
+                        <button type="button" id="cancel-post" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 rounded-2xl font-bold transition-colors">
                             Cancel
                         </button>
-                        <button id="publish-btn" class="flex-1 py-3 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm focus-visible hover-lift">
+                        <button id="publish-btn" class="flex-1 py-3 btn-action rounded-2xl font-bold uppercase tracking-widest text-sm">
                             Publish Live
                         </button>
                     </div>
@@ -712,12 +301,12 @@
         <!-- Feed List -->
         <div id="feed" class="space-y-8" role="feed" aria-label="Sports feed">
             <!-- Skeletons -->
-            <div class="shimmer h-64 w-full" aria-hidden="true"></div>
-            <div class="shimmer h-64 w-full" aria-hidden="true"></div>
+            <div class="shimmer h-64 w-full rounded-[2.5rem]" aria-hidden="true"></div>
+            <div class="shimmer h-64 w-full rounded-[2.5rem]" aria-hidden="true"></div>
         </div>
 
         <!-- No Posts Message -->
-        <div id="no-posts" class="hidden text-center py-20" aria-live="polite">
+        <div id="no-posts" class="hidden text-center py-20">
             <i class="fas fa-flag-checkered text-5xl mb-4 gradient-text" aria-hidden="true"></i>
             <p class="font-bold tracking-[0.3em] text-slate-400">ARENA IS EMPTY</p>
             <p class="text-sm text-slate-600 mt-2">Be the first to post something!</p>
@@ -725,7 +314,7 @@
 
         <!-- Load More Button -->
         <div id="load-more-container" class="hidden text-center mt-12">
-            <button id="load-more-btn" class="px-8 py-3 bg-slate-800 hover:bg-slate-700 rounded-2xl font-bold transition-colors focus-visible hover-lift">
+            <button id="load-more-btn" class="px-8 py-3 bg-slate-800 hover:bg-slate-700 rounded-2xl font-bold transition-colors">
                 Load More Posts
             </button>
         </div>
@@ -733,7 +322,7 @@
 
     <!-- Post Template -->
     <template id="post-tpl">
-        <article class="sport-card fade-in" role="article">
+        <article class="sport-card" role="article">
             <div class="p-8">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
@@ -745,37 +334,37 @@
                             <span class="post-time text-[10px] text-slate-500 uppercase font-bold tracking-widest" aria-label="Posted time"></span>
                         </div>
                     </div>
-                    <span class="post-tag text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 card-tag text-rose-500 rounded-md" aria-label="Category"></span>
+                    <span class="post-tag text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 bg-rose-600/10 text-rose-500 rounded-md" aria-label="Category"></span>
                 </div>
 
                 <h2 class="post-title text-2xl font-800 tracking-tight leading-tight mb-4 italic"></h2>
                 <p class="post-content text-slate-400 text-sm leading-relaxed mb-6"></p>
 
                 <div class="post-img-container hidden rounded-[1.5rem] overflow-hidden border border-white/5 mb-6 bg-slate-900">
-                    <img data-src="" class="post-img w-full h-auto object-cover max-h-96 transition-opacity duration-300 opacity-0" alt="news image" loading="lazy">
+                    <img data-src="" class="post-img w-full h-auto object-cover max-h-96" alt="news image" loading="lazy">
                 </div>
 
                 <div class="flex items-center gap-8 pt-2 border-t border-white/5">
-                    <button class="like-btn flex items-center gap-2 text-slate-400 hover:text-rose-500 transition-colors font-bold group focus-visible hover-lift tooltip" data-tooltip="Like this post" aria-label="Like post">
+                    <button class="like-btn flex items-center gap-2 text-slate-400 hover:text-rose-500 transition-colors font-bold group" aria-label="Like post">
                         <i class="far fa-heart text-xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
                         <span class="like-count text-xs">0</span>
                     </button>
-                    <button class="comment-toggle flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors font-bold group focus-visible hover-lift tooltip" data-tooltip="View comments" aria-label="Toggle comments">
+                    <button class="comment-toggle flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors font-bold group" aria-label="Toggle comments">
                         <i class="far fa-comment text-xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
                         <span class="comment-count text-xs">0</span>
                     </button>
-                    <button class="share-btn flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors font-bold group ml-auto focus-visible hover-lift tooltip" data-tooltip="Share post" aria-label="Share post">
+                    <button class="share-btn flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors font-bold group ml-auto" aria-label="Share post">
                         <i class="fas fa-share-alt text-lg group-hover:scale-110 transition-transform" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Comment Section -->
-            <div class="comment-drawer hidden border-t border-white/5 p-8">
-                <div class="comment-list space-y-4 mb-6 max-h-60 overflow-y-auto custom-scrollbar pr-2" role="list"></div>
+            <div class="comment-drawer hidden bg-black/30 border-t border-white/5 p-8">
+                <div class="comment-list space-y-4 mb-6 max-h-60 overflow-y-auto pr-2" role="list"></div>
                 <div class="relative">
-                    <input type="text" placeholder="Write a comment..." class="comment-input w-full px-5 py-3 rounded-2xl pr-14 text-sm focus:ring-2 focus:ring-rose-500/30 focus-visible" aria-label="Write a comment" maxlength="200">
-                    <button class="comment-submit absolute right-2 top-2 w-9 h-9 btn-action rounded-xl flex items-center justify-center hover:scale-105 transition-transform focus-visible hover-lift" aria-label="Submit comment">
+                    <input type="text" placeholder="Write a comment..." class="comment-input w-full px-5 py-3 rounded-2xl pr-14 text-sm focus:ring-2 focus:ring-rose-500/30" aria-label="Write a comment" maxlength="200">
+                    <button class="comment-submit absolute right-2 top-2 w-9 h-9 btn-action rounded-xl flex items-center justify-center hover:scale-105 transition-transform" aria-label="Submit comment">
                         <i class="fas fa-paper-plane text-xs" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -786,17 +375,15 @@
     <!-- Main JavaScript -->
     <script>
         // ============================================
-        // CONFIGURATION & INITIALIZATION
+        // CONFIGURATION
         // ============================================
         
+        // Your Supabase credentials
         const SUPABASE_URL = 'https://wmptvyecyozxhgyetohz.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtcHR2eWVjeW96eGhneWV0b2h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxNzQ1MjAsImV4cCI6MjA4MTc1MDUyMH0.syaPl5menEkDnjDu-0aP_5UijPIQhPGvnxqJE4K4WpQ';
 
         // Admin emails
         const ADMIN_EMAILS = ['admin333@gmail.com', 'suprememotive43@gmail.com'];
-
-        // Initialize Supabase
-        let supabase;
 
         // ============================================
         // STATE MANAGEMENT
@@ -812,7 +399,7 @@
         };
 
         // ============================================
-        // DOM CACHE & REFERENCES
+        // DOM REFERENCES
         // ============================================
         const DOM = {
             notification: document.getElementById('notification'),
@@ -858,6 +445,8 @@
         // ============================================
 
         function showNotification(title, message, type = 'info') {
+            console.log('Notification:', title, message, type);
+            
             if (!DOM.notification) return;
             
             DOM.notificationTitle.textContent = title;
@@ -866,15 +455,12 @@
             switch (type) {
                 case 'success':
                     DOM.notificationIcon.className = 'fas fa-check text-emerald-500';
-                    DOM.notificationIcon.parentElement.className = 'w-8 h-8 rounded-lg bg-emerald-600/20 flex items-center justify-center';
                     break;
                 case 'error':
                     DOM.notificationIcon.className = 'fas fa-exclamation-circle text-rose-500';
-                    DOM.notificationIcon.parentElement.className = 'w-8 h-8 rounded-lg bg-rose-600/20 flex items-center justify-center';
                     break;
                 default:
                     DOM.notificationIcon.className = 'fas fa-bell text-rose-500';
-                    DOM.notificationIcon.parentElement.className = 'w-8 h-8 rounded-lg bg-rose-600/20 flex items-center justify-center';
             }
 
             DOM.notification.classList.remove('hidden');
@@ -914,17 +500,19 @@
         }
 
         function isAdmin() {
-            return AppState.user && ADMIN_EMAILS.includes(AppState.user.email.toLowerCase());
+            return AppState.user && ADMIN_EMAILS.includes(AppState.user.email?.toLowerCase());
         }
 
         // ============================================
-        // AUTHENTICATION FUNCTIONS - FIXED
+        // AUTHENTICATION FUNCTIONS
         // ============================================
 
         async function checkUser() {
             setLoading(true);
             try {
                 const { data: { user }, error } = await supabase.auth.getUser();
+                
+                console.log('Check user result:', { user, error });
                 
                 if (!error && user) {
                     AppState.user = user;
@@ -933,13 +521,14 @@
                 }
             } catch (error) {
                 console.error('Error checking user:', error);
-                showNotification('Error', 'Failed to check authentication', 'error');
             } finally {
                 setLoading(false);
             }
         }
 
         function updateUI() {
+            console.log('Updating UI, user:', AppState.user);
+            
             if (AppState.user) {
                 DOM.loginTrigger?.classList.add('hidden');
                 DOM.userProfile?.classList.remove('hidden');
@@ -952,11 +541,11 @@
                 if (DOM.userRole) {
                     if (isAdmin()) {
                         DOM.userRole.textContent = 'Admin';
-                        DOM.userRole.className = 'badge badge-admin';
+                        DOM.userRole.className = 'text-[10px] text-emerald-500 font-bold uppercase tracking-widest';
                         DOM.adminToggle?.classList.remove('hidden');
                     } else {
                         DOM.userRole.textContent = 'Athlete';
-                        DOM.userRole.className = 'badge badge-athlete';
+                        DOM.userRole.className = 'text-[10px] text-rose-500 font-bold uppercase tracking-widest';
                         DOM.adminToggle?.classList.add('hidden');
                         DOM.composer?.classList.add('hidden');
                     }
@@ -972,6 +561,8 @@
         }
 
         async function handleAuth() {
+            console.log('Auth mode:', AppState.isLoginMode ? 'Login' : 'Signup');
+            
             const email = DOM.inputs.email?.value.trim() || '';
             const password = DOM.inputs.password?.value || '';
             
@@ -980,25 +571,23 @@
             DOM.passwordError?.classList.add('hidden');
             DOM.authError?.classList.add('hidden');
             
-            // Validation
-            if (!email || !/\S+@\S+\.\S+/.test(email)) {
-                DOM.emailError.textContent = 'Please enter a valid email address';
+            // Basic validation
+            if (!email) {
+                DOM.emailError.textContent = 'Email is required';
                 DOM.emailError.classList.remove('hidden');
-                DOM.inputs.email.classList.add('input-error');
-                DOM.inputs.email.focus();
                 return;
-            } else {
-                DOM.inputs.email.classList.remove('input-error');
             }
             
-            if (!password || password.length < 6) {
+            if (!password) {
+                DOM.passwordError.textContent = 'Password is required';
+                DOM.passwordError.classList.remove('hidden');
+                return;
+            }
+            
+            if (password.length < 6) {
                 DOM.passwordError.textContent = 'Password must be at least 6 characters';
                 DOM.passwordError.classList.remove('hidden');
-                DOM.inputs.password.classList.add('input-error');
-                DOM.inputs.password.focus();
                 return;
-            } else {
-                DOM.inputs.password.classList.remove('input-error');
             }
             
             const originalText = DOM.authBtn.textContent;
@@ -1009,15 +598,13 @@
                 let result;
                 
                 if (AppState.isLoginMode) {
-                    // Sign in
-                    console.log('Attempting sign in with:', email);
+                    console.log('Signing in with:', email);
                     result = await supabase.auth.signInWithPassword({
                         email: email,
                         password: password
                     });
                 } else {
-                    // Sign up
-                    console.log('Attempting sign up with:', email);
+                    console.log('Signing up with:', email);
                     result = await supabase.auth.signUp({
                         email: email,
                         password: password,
@@ -1043,6 +630,7 @@
                     DOM.inputs.email.value = '';
                     DOM.inputs.password.value = '';
                     
+                    // Show success message
                     if (AppState.isLoginMode) {
                         showNotification('Welcome back!', 'Successfully signed in', 'success');
                     } else {
@@ -1052,13 +640,13 @@
                     // Close modal
                     DOM.authModal?.classList.add('hidden');
                 } else {
-                    throw new Error('Authentication failed: No user data returned');
+                    throw new Error('Authentication failed');
                 }
                 
             } catch (error) {
-                console.error('Auth error details:', error);
+                console.error('Auth error:', error);
                 
-                let errorMessage = 'Authentication failed';
+                let errorMessage = 'Authentication failed. Please try again.';
                 
                 if (error.message.includes('Invalid login credentials')) {
                     errorMessage = 'Invalid email or password';
@@ -1066,8 +654,6 @@
                     errorMessage = 'Email already registered. Try signing in instead.';
                 } else if (error.message.includes('Email not confirmed')) {
                     errorMessage = 'Please check your email to confirm your account';
-                } else {
-                    errorMessage = error.message || 'Authentication failed';
                 }
                 
                 DOM.authError.textContent = errorMessage;
@@ -1112,6 +698,8 @@
                 
                 if (error) throw error;
                 
+                console.log('Fetched posts:', data);
+                
                 AppState.posts = AppState.currentPage === 1 
                     ? data || [] 
                     : [...AppState.posts, ...(data || [])];
@@ -1142,11 +730,7 @@
             
             DOM.noPosts?.classList.add('hidden');
             
-            const postsToRender = AppState.currentPage === 1 
-                ? AppState.posts 
-                : AppState.posts.slice((AppState.currentPage - 1) * AppState.postsPerPage);
-            
-            postsToRender.forEach((post) => {
+            AppState.posts.forEach((post) => {
                 const tpl = document.getElementById('post-tpl')?.content.cloneNode(true);
                 if (!tpl) return;
                 
@@ -1157,7 +741,6 @@
                 const timeEl = tpl.querySelector('.post-time');
                 const likeCountEl = tpl.querySelector('.like-count');
                 const commentCountEl = tpl.querySelector('.comment-count');
-                const articleEl = tpl.querySelector('article');
                 
                 if (titleEl) titleEl.textContent = post.title || '';
                 if (contentEl) contentEl.textContent = post.content || '';
@@ -1168,9 +751,6 @@
                     timeEl.textContent = formatTime(post.created_at);
                     timeEl.setAttribute('datetime', post.created_at);
                 }
-                if (articleEl) {
-                    articleEl.dataset.postId = post.id;
-                }
                 
                 // Handle image
                 if (post.image_url) {
@@ -1180,10 +760,6 @@
                     if (container && img) {
                         container.classList.remove('hidden');
                         img.src = post.image_url;
-                        img.onload = () => {
-                            img.classList.remove('opacity-0');
-                            img.classList.add('opacity-100');
-                        };
                         img.onerror = () => {
                             container.classList.add('hidden');
                         };
@@ -1221,11 +797,6 @@
                         } else {
                             likeBtn.classList.remove('text-rose-500');
                             if (likeIcon) likeIcon.className = 'far fa-heart text-xl';
-                        }
-                        
-                        if (likeIcon) {
-                            likeIcon.classList.add('like-animation');
-                            setTimeout(() => likeIcon.classList.remove('like-animation'), 400);
                         }
                         
                         // Update server
@@ -1300,7 +871,7 @@
             if (post.comments?.length > 0) {
                 post.comments.forEach(comment => {
                     const commentDiv = document.createElement('div');
-                    commentDiv.className = "flex gap-3 fade-in";
+                    commentDiv.className = "flex gap-3";
                     commentDiv.innerHTML = `
                         <div class="w-8 h-8 rounded-lg bg-slate-800 flex-shrink-0 flex items-center justify-center text-[10px] text-slate-500" aria-hidden="true">
                             <i class="fas fa-user"></i>
@@ -1349,7 +920,7 @@
                 
                 // Add comment to UI immediately
                 const commentDiv = document.createElement('div');
-                commentDiv.className = "flex gap-3 fade-in";
+                commentDiv.className = "flex gap-3";
                 commentDiv.innerHTML = `
                     <div class="w-8 h-8 rounded-lg bg-slate-800 flex-shrink-0 flex items-center justify-center text-[10px] text-slate-500" aria-hidden="true">
                         <i class="fas fa-user"></i>
@@ -1403,20 +974,14 @@
             const imageUrl = DOM.inputs.postImage?.value.trim() || '';
             
             // Validation
-            if (!title || title.length > 100) {
-                DOM.inputs.postTitle.classList.add('input-error');
-                showNotification('Invalid Title', 'Title must be 1-100 characters', 'error');
+            if (!title) {
+                showNotification('Invalid Title', 'Title is required', 'error');
                 return;
-            } else {
-                DOM.inputs.postTitle.classList.remove('input-error');
             }
             
-            if (!content || content.length > 500) {
-                DOM.inputs.postContent.classList.add('input-error');
-                showNotification('Invalid Content', 'Content must be 1-500 characters', 'error');
+            if (!content) {
+                showNotification('Invalid Content', 'Content is required', 'error');
                 return;
-            } else {
-                DOM.inputs.postContent.classList.remove('input-error');
             }
             
             const originalText = DOM.publishBtn?.textContent || '';
@@ -1462,7 +1027,7 @@
         }
 
         // ============================================
-        // EVENT LISTENERS SETUP
+        // EVENT LISTENERS
         // ============================================
 
         function initEventListeners() {
@@ -1496,8 +1061,6 @@
                 DOM.emailError?.classList.add('hidden');
                 DOM.passwordError?.classList.add('hidden');
                 DOM.authError?.classList.add('hidden');
-                DOM.inputs.email?.classList.remove('input-error');
-                DOM.inputs.password?.classList.remove('input-error');
             });
             
             // Auth form submission
@@ -1508,23 +1071,8 @@
             
             // Login trigger
             DOM.loginTrigger?.addEventListener('click', () => {
-                DOM.authModal?.classList.remove('hidden');
                 AppState.isLoginMode = false;
-                
-                // Update UI to sign up mode
-                if (DOM.authTitle) {
-                    DOM.authTitle.innerHTML = 'Join the <span class="gradient-text">Era</span>';
-                }
-                if (DOM.authSubtitle) {
-                    DOM.authSubtitle.textContent = 'Sign up to react and comment on feeds.';
-                }
-                if (DOM.authBtn) {
-                    DOM.authBtn.textContent = 'Create Account';
-                }
-                if (DOM.authToggle) {
-                    DOM.authToggle.textContent = 'Already have an account? Sign In';
-                }
-                
+                DOM.authModal?.classList.remove('hidden');
                 DOM.inputs.email?.focus();
             });
             
@@ -1574,7 +1122,6 @@
                 if (DOM.titleCounter) {
                     const length = DOM.inputs.postTitle.value.length;
                     DOM.titleCounter.textContent = `${length}/100`;
-                    DOM.titleCounter.className = `text-xs ${length > 100 ? 'text-rose-400' : 'text-slate-500'} mt-1 text-right`;
                 }
             });
             
@@ -1582,7 +1129,6 @@
                 if (DOM.contentCounter) {
                     const length = DOM.inputs.postContent.value.length;
                     DOM.contentCounter.textContent = `${length}/500`;
-                    DOM.contentCounter.className = `text-xs ${length > 500 ? 'text-rose-400' : 'text-slate-500'} mt-1 text-right`;
                 }
             });
             
@@ -1611,25 +1157,13 @@
                 }
             });
             
-            // Input validation listeners
+            // Clear errors when typing
             DOM.inputs.email?.addEventListener('input', () => {
-                DOM.inputs.email.classList.remove('input-error');
-                DOM.emailError?.classList.add('hidden');
                 DOM.authError?.classList.add('hidden');
             });
             
             DOM.inputs.password?.addEventListener('input', () => {
-                DOM.inputs.password.classList.remove('input-error');
-                DOM.passwordError?.classList.add('hidden');
                 DOM.authError?.classList.add('hidden');
-            });
-            
-            DOM.inputs.postTitle?.addEventListener('input', () => {
-                DOM.inputs.postTitle.classList.remove('input-error');
-            });
-            
-            DOM.inputs.postContent?.addEventListener('input', () => {
-                DOM.inputs.postContent.classList.remove('input-error');
             });
         }
 
@@ -1643,8 +1177,7 @@
                     .channel('arena-live')
                     .on('postgres_changes', 
                         { event: '*', schema: 'public', table: 'sports_feed' }, 
-                        (payload) => {
-                            console.log('Realtime update:', payload);
+                        () => {
                             AppState.currentPage = 1;
                             fetchFeed();
                         }
@@ -1660,24 +1193,31 @@
         // ============================================
 
         async function init() {
+            console.log('Starting SportEra initialization...');
+            
             try {
-                console.log('Initializing SportEra...');
-                
                 // Initialize Supabase
                 if (window.supabase && window.supabase.createClient) {
-                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    console.log('Supabase initialized successfully');
+                    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    supabase = window.supabaseClient;
+                    console.log('Supabase client created');
                 } else {
                     console.error('Supabase library not loaded');
-                    showNotification('Error', 'Failed to initialize application', 'error');
+                    showNotification('Error', 'Supabase library failed to load', 'error');
                     return;
                 }
                 
                 // Set up event listeners
                 initEventListeners();
                 
-                // Check authentication
-                await checkUser();
+                // Check for existing session
+                const { data: { session } } = await supabase.auth.getSession();
+                console.log('Session found:', session);
+                
+                if (session) {
+                    AppState.user = session.user;
+                    updateUI();
+                }
                 
                 // Load initial feed
                 await fetchFeed();
@@ -1685,32 +1225,30 @@
                 // Set up real-time updates
                 setupRealtime();
                 
-                console.log('SportEra initialized successfully');
-                
-                // Set up auth state change listener
+                // Set up auth state listener
                 supabase.auth.onAuthStateChange((event, session) => {
                     console.log('Auth state changed:', event, session);
+                    
                     if (event === 'SIGNED_IN' && session) {
                         AppState.user = session.user;
                         updateUI();
+                        showNotification('Welcome!', 'Successfully signed in', 'success');
                     } else if (event === 'SIGNED_OUT') {
                         AppState.user = null;
                         updateUI();
                     }
                 });
                 
+                console.log('SportEra initialized successfully');
+                
             } catch (error) {
-                console.error('Initialization failed:', error);
-                showNotification('Error', 'Failed to load application', 'error');
+                console.error('Initialization error:', error);
+                showNotification('Error', 'Failed to initialize application', 'error');
             }
         }
 
         // Start the application
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
